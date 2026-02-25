@@ -1,0 +1,52 @@
+.layout {
+  background: #f5f7fa;
+  color: #1f2937;
+  font-family: "Inter", sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.contentBar {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.screensBar {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  background: #f5f7fa;
+}
+
+.chatbotBar {
+  background: #ffffff;
+  border-left: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08);
+  z-index: 30;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.screensBar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.screensBar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.screensBar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.screensBar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

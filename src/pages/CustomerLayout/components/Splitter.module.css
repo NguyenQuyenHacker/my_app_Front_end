@@ -1,0 +1,6 @@
+.splitter {
+  width: 6px;
+  cursor: col-resize;
+  flex-shrink: 0;
+  background: transparent;
+}

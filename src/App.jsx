@@ -1,27 +1,19 @@
-import React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
-import Login from "./pages/Login.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
-import { getToken } from "./utils/storage.js";
-
-function PrivateRoute({ children }) {
-  const token = getToken();
-  return token ? children : <Navigate to="/login" replace />;
-}
-
-export default function App() {
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login/Login';
+import Dashboard from './pages/Dashboard/Dashboard';
+import CustomerLayout from './pages/CustomerLayout/CustomerLayout';
+function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route
-        path="/"
-        element={
-          <PrivateRoute>
-            <Dashboard />
-          </PrivateRoute>
-        }
-      />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/customer" element={<CustomerLayout />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
+
+export default App;
