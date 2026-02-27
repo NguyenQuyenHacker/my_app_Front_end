@@ -1,50 +1,41 @@
 import React from "react";
 import styles from "./AccountSummary.module.css";
 
-function formatMoney(value, currency = "VND") {
-  if (value === null || value === undefined) return "--";
-  return new Intl.NumberFormat("vi-VN", {
+const formatMoney = (value, currency) =>
+  new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency,
-    maximumFractionDigits: 0,
-  }).format(value);
-}
+  }).format(Number(value || 0));
 
-export default function AccountSummary({ accounts }) {
-  const totalAccounts = accounts.length;
-  const activeAccounts = accounts.filter((item) => item.status === "ACTIVE").length;
-  const totalBalance = accounts.reduce((sum, item) => sum + (item.balance || 0), 0);
-
+const AccountSummary = ({ fullName, account }) => {
   return (
-    <section className={styles.summaryCard}>
-      <div className={styles.glow} />
-
-      <div className={styles.content}>
-        <div className={styles.leftBlock}>
-          <p className={styles.eyebrow}>Tài khoản ngân hàng</p>
-          <h2 className={styles.title}>Quản lý tài khoản</h2>
-          <p className={styles.subtitle}>
-            Theo dõi số dư, trạng thái và thông tin chi tiết các tài khoản của khách hàng.
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div>
+          <p className={styles.caption}>Chủ tài khoản</p>
+          <h2 className={styles.name}>{fullName}</h2>
+          <p className={styles.subText}>
+            {account.bank_name} • {account.account_no}
           </p>
         </div>
 
-        <div className={styles.statsGrid}>
-          <div className={styles.statItem}>
-            <span className={styles.statLabel}>Tổng tài khoản</span>
-            <span className={styles.statValue}>{totalAccounts}</span>
-          </div>
-
-          <div className={styles.statItem}>
-            <span className={styles.statLabel}>Đang hoạt động</span>
-            <span className={styles.statValue}>{activeAccounts}</span>
-          </div>
-
-          <div className={styles.statItemWide}>
-            <span className={styles.statLabel}>Tổng số dư</span>
-            <span className={styles.balanceValue}>{formatMoney(totalBalance)}</span>
-          </div>
-        </div>
+        <span
+          className={`${styles.status} ${
+            account.status === "ACTIVE" ? styles.active : styles.inactive
+          }`}
+        >
+          {account.status}
+        </span>
       </div>
-    </section>
+
+      <div className={styles.balanceCard}>
+        <span className={styles.balanceLabel}>Số dư hiện tại</span>
+        <h1 className={styles.balanceValue}>
+          {formatMoney(account.balance, account.currency)}
+        </h1>
+      </div>
+    </div>
   );
-}
+};
+
+export default AccountSummary;

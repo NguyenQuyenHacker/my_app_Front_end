@@ -1,23 +1,34 @@
 import React from "react";
 import styles from "./AccountList.module.css";
-import AccountCard from "./AccountCard";
 
-export default function AccountList({ accounts }) {
-  if (!accounts.length) {
-    return <div className={styles.emptyState}>Chưa có tài khoản nào.</div>;
-  }
-
+const AccountList = ({ account }) => {
   return (
-    <section className={styles.section}>
-      <div className={styles.sectionHead}>
-        <h3 className={styles.sectionTitle}>Danh sách tài khoản</h3>
-      </div>
+    <div className={styles.container}>
+      <h3 className={styles.title}>Thông tin tài khoản</h3>
 
       <div className={styles.grid}>
-        {accounts.map((account) => (
-          <AccountCard key={account.account_id} account={account} />
-        ))}
+        <div className={styles.item}>
+          <span className={styles.label}>Số tài khoản</span>
+          <strong>{account.account_no}</strong>
+        </div>
+
+        <div className={styles.item}>
+          <span className={styles.label}>Ngân hàng</span>
+          <strong>{account.bank_name}</strong>
+        </div>
+
+        <div className={styles.item}>
+          <span className={styles.label}>Loại tiền</span>
+          <strong>{account.currency}</strong>
+        </div>
+
+        <div className={styles.item}>
+          <span className={styles.label}>Trạng thái</span>
+          <strong>{account.status}</strong>
+        </div>
       </div>
-    </section>
+    </div>
   );
-}
+};
+
+export default AccountList;

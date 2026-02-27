@@ -4,8 +4,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import CustomerLayout from "./pages/CustomerLayout/CustomerLayout";
 import CustomerOverview from "./pages/CustomerLayout/screens/CustomerOverview/CustomerOverview";
 import AccountScreen from "./pages/CustomerLayout/screens/AccountScreen/AccountScreen";
-// import TransactionScreen from "./pages/CustomerLayout/screens/TransactionScreen/TransactionScreen";
-// import LoanScreen from "./pages/CustomerLayout/screens/LoanScreen/LoanScreen";
+
 
 function App() {
   return (
@@ -20,8 +19,7 @@ function App() {
           <Route path="overview" element={<CustomerOverview />} />
           <Route path="accounts" element={<AccountScreen />} />
           <Route path="dashboard" element={<Dashboard />} />
-          {/* <Route path="transactions" element={<TransactionScreen />} /> */}
-          {/* <Route path="loans" element={<LoanScreen />} /> */}
+
         </Route>
       </Routes>
     </BrowserRouter>

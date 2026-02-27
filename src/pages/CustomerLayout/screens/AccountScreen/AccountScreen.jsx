@@ -1,76 +1,141 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { getAccountOverview } from "../../../../api/accountApi";
 import styles from "./AccountScreen.module.css";
-import AccountSummary from "./components/AccountSummary";
-import AccountList from "./components/AccountList";
-// import { getCustomerAccounts } from "../../../../api/userApi";
 
-export default function AccountScreen() {
-  const [accounts, setAccounts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+import AccountSummary from "./components/AccountSummary";
+import AccountCard from "./components/AccountCard";
+import AccountList from "./components/AccountList";
+import TransactionList from "./components/TransactionList";
+
+const AccountScreen = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const currentView = searchParams.get("view") || "overview";
 
   useEffect(() => {
-    const fetchAccounts = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        setError("");
+        setErrorMessage("");
 
-        // Thay bằng API thật sau:
-        // const result = await getCustomerAccounts();
-        // setAccounts(result.accounts);
+        const result = await getAccountOverview();
+        setData(result);
+      } catch (error) {
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/login");
+          return;
+        }
 
-        setAccounts([
-          {
-            account_id: "1",
-            account_no: "19031234567890",
-            type: "CHECKING",
-            status: "ACTIVE",
-            currency: "VND",
-            opened_at: "2024-01-10T08:00:00Z",
-            balance: 1750000000,
-          },
-          {
-            account_id: "2",
-            account_no: "19039876543210",
-            type: "SAVINGS",
-            status: "ACTIVE",
-            currency: "VND",
-            opened_at: "2024-06-20T08:00:00Z",
-            balance: 500000000,
-          },
-          {
-            account_id: "3",
-            account_no: "19030000111122",
-            type: "TERM",
-            status: "FROZEN",
-            currency: "VND",
-            opened_at: "2023-11-03T08:00:00Z",
-            balance: 250000000,
-          },
-        ]);
-      } catch (err) {
-        console.error(err);
-        setError("Không tải được danh sách tài khoản.");
+        console.error(error);
+        setErrorMessage("Không thể tải dữ liệu tài khoản.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAccounts();
-  }, []);
+    fetchData();
+  }, [navigate]);
+
+  const customer = data?.customer || null;
+  const account = data?.account || null;
+  const card = data?.card || null;
+  const entries = data?.entries || [];
+
+  const recentEntries = useMemo(() => entries.slice(0, 10), [entries]);
 
   if (loading) {
-    return <div className={styles.wrapper}>Đang tải dữ liệu tài khoản...</div>;
+    return <div className={styles.state}>Đang tải dữ liệu...</div>;
   }
 
-  if (error) {
-    return <div className={styles.wrapper}>{error}</div>;
+  if (errorMessage) {
+    return <div className={styles.error}>{errorMessage}</div>;
+  }
+
+  if (!account) {
+    return <div className={styles.state}>Không có dữ liệu tài khoản.</div>;
   }
 
   return (
     <div className={styles.wrapper}>
-      <AccountSummary accounts={accounts} />
-      <AccountList accounts={accounts} />
+      {currentView === "overview" && (
+        <>
+          <div className={styles.topSection}>
+            <AccountSummary
+              fullName={customer?.full_name || ""}
+              account={account}
+            />
+
+            {card ? (
+              <AccountCard
+                fullName={customer?.full_name || ""}
+                card={card}
+                bankName={account.bank_name}
+              />
+            ) : (
+              <div className={styles.noCard}>Chưa có dữ liệu thẻ.</div>
+            )}
+          </div>
+
+          <div className={styles.section}>
+            <div className={styles.actionRow}>
+              <Link to="/customer/accounts?view=transactions" className={styles.primaryButton}>
+                Xem lịch sử giao dịch
+              </Link>
+
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={() => console.log("Đi tới màn hình chuyển tiền")}
+              >
+                Chuyển tiền
+              </button>
+
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={() => window.location.reload()}
+              >
+                Tải lại
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.section}>
+            <AccountList account={account} />
+          </div>
+        </>
+      )}
+
+      {currentView === "transactions" && (
+        <div className={styles.section}>
+          <div className={styles.viewHeader}>
+            <div>
+              <h2 className={styles.viewTitle}>Lịch sử giao dịch</h2>
+              <p className={styles.viewSubtitle}>
+                Tài khoản {account.account_no}
+              </p>
+            </div>
+
+            <Link to="/customer/accounts?view=overview" className={styles.backButton}>
+              Quay lại tài khoản
+            </Link>
+          </div>
+
+          <TransactionList
+            entries={recentEntries}
+            currency={account.currency}
+          />
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default AccountScreen;

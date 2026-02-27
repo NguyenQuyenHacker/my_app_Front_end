@@ -10,6 +10,6 @@ export const loginUser = async (phone, password) => {
 };
 
 export const getCurrentUser = async () => {
-  const response = await api.get("/customer");
+  const response = await api.get("/overview");
   return response.data;
 };
