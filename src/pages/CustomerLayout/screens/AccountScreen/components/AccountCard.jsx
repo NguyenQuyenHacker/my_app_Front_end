@@ -7,8 +7,14 @@ const AccountCard = ({ fullName, card, bankName }) => {
   return (
     <div className={styles.cardShell}>
       <div className={styles.top}>
-        <span className={styles.bank}>{bankName}</span>
-        <span className={styles.type}>CREDIT</span>
+        <div>
+          <div className={styles.brand}>{bankName}</div>
+          <div className={styles.cardType}>CREDIT CARD</div>
+        </div>
+        <div className={styles.logoMark}>
+          <span />
+          <span />
+        </div>
       </div>
 
       <div className={styles.number}>{card.card_no}</div>

@@ -1,38 +1,28 @@
 .container {
-  background: linear-gradient(135deg, #1d4ed8, #2563eb);
-  color: #ffffff;
+  background: #ffffff;
+  border: 1px solid #ececec;
   border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.25);
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(17, 17, 17, 0.05);
 }
 
-.header {
+.brandBar {
+  background: linear-gradient(90deg, #d71920, #ee2b32);
+  color: #ffffff;
+  padding: 14px 18px;
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  align-items: flex-start;
+  align-items: center;
 }
 
-.caption {
-  margin: 0 0 6px;
-  opacity: 0.9;
-  font-size: 13px;
-}
-
-.name {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 700;
-}
-
-.subText {
-  margin: 8px 0 0;
-  opacity: 0.9;
-  font-size: 14px;
+.brandName {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
 }
 
 .status {
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 800;
@@ -40,16 +30,40 @@
 }
 
 .active {
-  color: #dcfce7;
+  color: #ffffff;
 }
 
 .inactive {
-  color: #fee2e2;
+  color: #ffe5e5;
+}
+
+.body {
+  padding: 20px;
+}
+
+.caption {
+  margin: 0 0 6px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.name {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: #111111;
+}
+
+.subText {
+  margin: 8px 0 0;
+  color: #6b7280;
+  font-size: 14px;
 }
 
 .balanceCard {
   margin-top: 18px;
-  background: rgba(255, 255, 255, 0.14);
+  background: #fafafa;
+  border: 1px solid #eeeeee;
   border-radius: 14px;
   padding: 16px;
 }
@@ -57,11 +71,14 @@
 .balanceLabel {
   display: block;
   font-size: 14px;
-  opacity: 0.9;
+  color: #6b7280;
   margin-bottom: 8px;
 }
 
 .balanceValue {
   margin: 0;
   font-size: 30px;
+  line-height: 1.2;
+  color: #d71920;
+  font-weight: 800;
 }

@@ -4,7 +4,10 @@ import styles from "./AccountList.module.css";
 const AccountList = ({ account }) => {
   return (
     <div className={styles.container}>
-      <h3 className={styles.title}>Thông tin tài khoản</h3>
+      <div className={styles.header}>
+        <h3 className={styles.title}>Thông tin tài khoản</h3>
+        <span className={styles.badge}>{account.bank_name}</span>
+      </div>
 
       <div className={styles.grid}>
         <div className={styles.item}>

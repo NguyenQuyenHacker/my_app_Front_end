@@ -1,13 +1,31 @@
 .container {
   display: flex;
   flex-direction: column;
+  gap: 14px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
 
 .title {
   margin: 0;
   font-size: 18px;
-  color: #0f172a;
+  color: #111111;
+  font-weight: 800;
+}
+
+.badge {
+  background: #fff1f2;
+  color: #d71920;
+  border: 1px solid #ffd5d8;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .grid {
@@ -17,16 +35,16 @@
 }
 
 .item {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  background: #fafafa;
+  border: 1px solid #ededed;
+  border-radius: 14px;
   padding: 14px;
 }
 
 .label {
   display: block;
   font-size: 13px;
-  color: #64748b;
+  color: #6b7280;
   margin-bottom: 6px;
 }
 

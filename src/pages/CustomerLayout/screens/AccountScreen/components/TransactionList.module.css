@@ -9,27 +9,42 @@
   justify-content: space-between;
   gap: 12px;
   align-items: center;
-  padding: 14px;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  padding: 14px 16px;
+  border: 1px solid #ececec;
+  border-radius: 14px;
   background: #ffffff;
 }
 
 .left {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 12px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.incomeDot {
+  background: #16a34a;
+}
+
+.expenseDot {
+  background: #d71920;
 }
 
 .note {
   margin: 0;
   font-weight: 700;
-  color: #0f172a;
+  color: #111111;
 }
 
 .time {
   font-size: 13px;
-  color: #64748b;
+  color: #6b7280;
 }
 
 .amount {
@@ -39,15 +54,17 @@
 
 .income {
   color: #16a34a;
+   
 }
 
 .expense {
-  color: #dc2626;
+  color: #d71920;
 }
 
 .empty {
   padding: 18px;
   border-radius: 12px;
-  background: #f8fafc;
-  color: #64748b;
+  background: #fafafa;
+  border: 1px solid #ececec;
+  color: #6b7280;
 }

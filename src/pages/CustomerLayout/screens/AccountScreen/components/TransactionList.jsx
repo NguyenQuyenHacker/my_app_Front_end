@@ -23,8 +23,15 @@ const TransactionList = ({ entries = [], currency = "VND" }) => {
         return (
           <div key={e.entry_id} className={styles.item}>
             <div className={styles.left}>
-              <p className={styles.note}>{e.note || "Giao dịch"}</p>
-              <span className={styles.time}>{formatDateTime(e.created_at)}</span>
+              <div
+                className={`${styles.dot} ${
+                  isIncome ? styles.incomeDot : styles.expenseDot
+                }`}
+              />
+              <div>
+                <p className={styles.note}>{e.note || "Giao dịch"}</p>
+                <span className={styles.time}>{formatDateTime(e.created_at)}</span>
+              </div>
             </div>
 
             <div className={styles.right}>

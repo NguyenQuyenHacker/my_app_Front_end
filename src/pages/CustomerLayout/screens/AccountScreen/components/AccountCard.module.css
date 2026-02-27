@@ -1,13 +1,13 @@
 .cardShell {
   min-height: 220px;
-  border-radius: 18px;
-  padding: 20px;
-  background: linear-gradient(135deg, #0f172a, #334155);
+  border-radius: 20px;
+  padding: 22px;
+  background: linear-gradient(135deg, #1c1c1e, #3a3a3c);
   color: #ffffff;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.2);
+  box-shadow: 0 14px 28px rgba(17, 17, 17, 0.18);
 }
 
 .top,
@@ -18,14 +18,41 @@
   gap: 12px;
 }
 
-.bank,
-.type {
+.brand {
+  font-size: 18px;
   font-weight: 800;
-  letter-spacing: 0.4px;
+}
+
+.cardType {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #d1d5db;
+  letter-spacing: 1px;
+}
+
+.logoMark {
+  display: flex;
+  align-items: center;
+}
+
+.logoMark span {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.logoMark span:first-child {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.logoMark span:last-child {
+  background: rgba(215, 25, 32, 0.9);
+  margin-left: -8px;
 }
 
 .number {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
   letter-spacing: 2px;
   margin: 18px 0;
@@ -34,7 +61,7 @@
 .label {
   display: block;
   font-size: 12px;
-  color: #cbd5e1;
+  color: #d1d5db;
   margin-bottom: 6px;
 }
 

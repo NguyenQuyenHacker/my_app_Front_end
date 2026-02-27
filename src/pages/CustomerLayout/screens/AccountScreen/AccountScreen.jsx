@@ -48,7 +48,7 @@ const AccountScreen = () => {
   const card = data?.card || null;
   const entries = data?.entries || [];
 
-  const recentEntries = useMemo(() => entries.slice(0, 10), [entries]);
+  const recentEntries = useMemo(() => entries.slice(0,), [entries]);
 
   if (loading) {
     return <div className={styles.state}>Đang tải dữ liệu...</div>;
@@ -66,6 +66,15 @@ const AccountScreen = () => {
     <div className={styles.wrapper}>
       {currentView === "overview" && (
         <>
+          <div className={styles.pageHeader}>
+            <div>
+              <h1 className={styles.pageTitle}>Tài khoản của bạn</h1>
+              <p className={styles.pageSubtitle}>
+                Quản lý thông tin tài khoản, thẻ và số dư
+              </p>
+            </div>
+          </div>
+
           <div className={styles.topSection}>
             <AccountSummary
               fullName={customer?.full_name || ""}
@@ -85,17 +94,19 @@ const AccountScreen = () => {
 
           <div className={styles.section}>
             <div className={styles.actionRow}>
-              <Link to="/customer/accounts?view=transactions" className={styles.primaryButton}>
+              <Link
+                to="/customer/accounts?view=transactions"
+                className={styles.primaryButton}
+              >
                 Xem lịch sử giao dịch
               </Link>
 
-              <button
-                type="button"
+              <Link 
+                to="/customer/transfer" 
                 className={styles.secondaryButton}
-                onClick={() => console.log("Đi tới màn hình chuyển tiền")}
               >
                 Chuyển tiền
-              </button>
+              </Link>
 
               <button
                 type="button"
@@ -123,7 +134,10 @@ const AccountScreen = () => {
               </p>
             </div>
 
-            <Link to="/customer/accounts?view=overview" className={styles.backButton}>
+            <Link
+              to="/customer/accounts?view=overview"
+              className={styles.backButton}
+            >
               Quay lại tài khoản
             </Link>
           </div>

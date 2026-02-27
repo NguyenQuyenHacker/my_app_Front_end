@@ -50,7 +50,7 @@ export default function Header({ onToggleChatbot, isChatbotOpen }) {
     <header className={styles.header}>
       <div className={styles.leftGroup}>
         <div className={styles.logoGroup}>
-          <a href="#" className={styles.logoLink}>
+          <a href="/customer" className={styles.logoLink}>
             <img
               src="https://techcombank.com/content/dam/techcombank/public-site/seo/techcombank_logo_svg_86201e50d1.svg"
               alt="Techcombank Logo"

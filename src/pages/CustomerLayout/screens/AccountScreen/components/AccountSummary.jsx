@@ -10,15 +10,8 @@ const formatMoney = (value, currency) =>
 const AccountSummary = ({ fullName, account }) => {
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <p className={styles.caption}>Chủ tài khoản</p>
-          <h2 className={styles.name}>{fullName}</h2>
-          <p className={styles.subText}>
-            {account.bank_name} • {account.account_no}
-          </p>
-        </div>
-
+      <div className={styles.brandBar}>
+        <span className={styles.brandName}>Techcombank</span>
         <span
           className={`${styles.status} ${
             account.status === "ACTIVE" ? styles.active : styles.inactive
@@ -28,11 +21,19 @@ const AccountSummary = ({ fullName, account }) => {
         </span>
       </div>
 
-      <div className={styles.balanceCard}>
-        <span className={styles.balanceLabel}>Số dư hiện tại</span>
-        <h1 className={styles.balanceValue}>
-          {formatMoney(account.balance, account.currency)}
-        </h1>
+      <div className={styles.body}>
+        <p className={styles.caption}>Chủ tài khoản</p>
+        <h2 className={styles.name}>{fullName}</h2>
+        <p className={styles.subText}>
+          {account.bank_name} • {account.account_no}
+        </p>
+
+        <div className={styles.balanceCard}>
+          <span className={styles.balanceLabel}>Số dư hiện tại</span>
+          <h1 className={styles.balanceValue}>
+            {formatMoney(account.balance, account.currency)}
+          </h1>
+        </div>
       </div>
     </div>
   );
