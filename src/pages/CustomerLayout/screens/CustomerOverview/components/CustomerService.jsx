@@ -1,28 +1,25 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styles from "./CustomerService.module.css";
 
 export default function CustomerService() {
   return (
     <div className={styles.grid}>
-      <a className={styles.cardLink} href="#">
+      <Link className={styles.cardLink} to="/customer/accounts">
         <div className={styles.card}>
           <div className={styles.arrowWrap}>
             <span className="material-symbols-outlined">arrow_outward</span>
           </div>
-
           <div className={styles.iconWrap}>
             <span className="material-symbols-outlined">account_balance_wallet</span>
           </div>
+          <h2 className={styles.cardTitle}>Tài khoản</h2>
+        </div> 
+      </Link>
 
-          <h3 className={styles.cardTitle}>Tài khoản</h3>
-          <p className={styles.cardDesc}>2 Tài khoản thanh toán</p>
-          <p className={styles.primaryMeta}>1.75 Tỷ VND</p>
-        </div>
-      </a>
-
-      <a className={styles.cardLink} href="#">
+      <Link className={styles.cardLink} to="/customer/transactions">
         <div className={styles.card}>
-          <div className={styles.arrowWrap}>
+          <div className={styles.arrowWrap}> 
             <span className="material-symbols-outlined">arrow_outward</span>
           </div>
 
@@ -34,9 +31,9 @@ export default function CustomerService() {
           <p className={styles.cardDesc}>Lịch sử 30 ngày</p>
           <p className={styles.successMeta}>+12 Giao dịch mới</p>
         </div>
-      </a>
+      </Link>
 
-      <a className={styles.cardLink} href="#">
+      <Link className={styles.cardLink} to="/customer/loans">
         <div className={styles.card}>
           <div className={styles.arrowWrap}>
             <span className="material-symbols-outlined">arrow_outward</span>
@@ -46,13 +43,13 @@ export default function CustomerService() {
             <span className="material-symbols-outlined">description</span>
           </div>
 
-          <h3 className={styles.cardTitle}>Hồ sơ vay</h3>
+          <h3 className={styles.cardTitle}>Hồ sơ vay</h3> 
           <p className={styles.cardDesc}>1 Khoản vay mua nhà</p>
           <span className={styles.badge}>Đang thẩm định</span>
         </div>
-      </a>
+      </Link>
 
-      <a className={styles.cardLink} href="#">
+      <Link className={styles.cardLink} to="/customer/cards">
         <div className={styles.card}>
           <div className={styles.arrowWrap}>
             <span className="material-symbols-outlined">arrow_outward</span>
@@ -66,7 +63,7 @@ export default function CustomerService() {
           <p className={styles.cardDesc}>Visa Signature</p>
           <p className={styles.mutedMeta}>Hạn mức: 45tr</p>
         </div>
-      </a>
+      </Link>
     </div>
   );
 }

@@ -73,14 +73,18 @@ export default function Header({ onToggleChatbot, isChatbotOpen }) {
           <span>{weather.temp}°C</span>
         </div>
 
-        <button 
+<button 
           className={styles.aiButton} 
           onClick={onToggleChatbot} 
           type="button" 
           aria-label="Toggle AI Assistant" 
           title="AI Assistant"
         >
-          <span className="material-symbols-outlined">smart_toy</span>
+          <img 
+            src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/webp/microsoft-copilot.webp" 
+            alt="AI Assistant" 
+            className={styles.aiIconImage} 
+          />
         </button>
       </div>
     </header>

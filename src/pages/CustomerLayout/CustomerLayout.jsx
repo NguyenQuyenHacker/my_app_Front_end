@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Outlet } from "react-router-dom";
 import styles from "./CustomerLayout.module.css";
 import Header from "./components/Header/Header";
 import ChatbotBar from "./components/ChatbotBar/ChatbotBar";
 import Splitter from "./components/Splitter";
-import CustomerOverview from "./screens/CustomerOverview/CustomerOverview";
 
 export default function CustomerLayout() {
   const MIN_WIDTH = 320;
@@ -56,25 +56,22 @@ export default function CustomerLayout() {
     };
   }, [isDragging, isChatbotOpen]);
 
-  const toggleChatbot = () => {
-    setIsChatbotOpen((prev) => !prev);
-  };
+  const toggleChatbot = () => setIsChatbotOpen((prev) => !prev);
 
   return (
     <div className={styles.layout} ref={layoutRef}>
       <div className={styles.contentBar}>
-        <Header onToggleChatbot={toggleChatbot} isChatbotOpen={isChatbotOpen} />
+        <Header onToggleChatbot={toggleChatbot} />
         <main className={styles.screensBar}>
-          <CustomerOverview />
+          <Outlet />
         </main>
       </div>
 
       {isChatbotOpen && (
         <>
           <Splitter onMouseDown={() => setIsDragging(true)} />
-
           <div className={styles.chatbotBar} style={{ width: chatbotWidth }}>
-            <ChatbotBar onClose={toggleChatbot}/>
+            <ChatbotBar onClose={toggleChatbot} />
           </div>
         </>
       )}

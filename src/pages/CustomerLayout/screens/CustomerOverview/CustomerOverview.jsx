@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./CustomerOverview.module.css";
+import styles from "./CustomerOverview.module.css"; 
 import { getCurrentUser } from "../../../../api/userApi";
 import CustomerInfo from "./components/CustomerInfo";
 import CustomerService from "./components/CustomerService";

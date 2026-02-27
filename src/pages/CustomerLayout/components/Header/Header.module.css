@@ -63,12 +63,12 @@
 }
 
 .aiButton {
-  width: 42px;
-  height: 42px;   
-  background: #e31937;
+  width: 35px;
+  height: 35px;   
+  background: #ffffff;
   color: #ffffff;
   border: 0;
-  border-radius: 20px;
+  border-radius: 15px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -78,6 +78,12 @@
 }
 
 .aiButton:hover {
-  background: #c4122c;
+  background: #ffacac;
   transform: scale(1.05);
+}
+
+.aiIconImage {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
