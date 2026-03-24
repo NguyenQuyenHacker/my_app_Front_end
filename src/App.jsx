@@ -24,3 +24,12 @@ function App() {
 }
 
 export default App;
+
+// import Chat from "./test_chatbot/Chat";
+// import "./test_chatbot/Chat.css";
+
+// function App() {
+//   return <Chat />;
+// }
+
+// export default App;

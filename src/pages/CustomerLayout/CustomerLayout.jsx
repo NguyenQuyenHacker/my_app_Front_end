@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Outlet } from "react-router-dom";
 import styles from "./CustomerLayout.module.css";
 import Header from "./components/Header/Header";
-import ChatbotBar from "./components/ChatbotBar/ChatbotBar";
+import ChatbotBar from "./components/ChatbotBar/ChatbotBar.tsx";
 import Splitter from "./components/Splitter";
 
 export default function CustomerLayout() {
