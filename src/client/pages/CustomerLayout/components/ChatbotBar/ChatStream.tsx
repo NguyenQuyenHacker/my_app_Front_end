@@ -1,8 +1,10 @@
 import { FormEvent, useMemo, useState } from "react";
 import { useStream } from "@langchain/react";
 import type { BaseMessage } from "@langchain/core/messages";
-import { AGENT_URL, ASSISTANT_ID, THREAD_STORAGE_KEY } from "./core/constants";
-import { createThread } from "./core/api";
+import { AGENT_URL, ASSISTANT_ID } from "./core/constants";
+import { createLangGraphThread } from "./core/api";
+
+const THREAD_STORAGE_KEY = "chat_thread_id";
 import { isVisibleMessage } from "./core/utils";
 import type { AppMessage, MessageMeta, CheckpointRef } from "./core/types";
 import { MessageCard } from "./components/MessageCard";
@@ -36,7 +38,7 @@ export function ChatStream({ threadId, onCreateNewThread }: { threadId: string; 
 
   const handleCreateNewChat = async () => {
     try {
-      const newThreadId = await createThread();
+      const newThreadId = await createLangGraphThread();
       localStorage.setItem(THREAD_STORAGE_KEY, newThreadId);
       onCreateNewThread(newThreadId);
     } catch (error) {

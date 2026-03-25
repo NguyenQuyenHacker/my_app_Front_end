@@ -11,10 +11,26 @@ export type AppMessage = BaseMessage & {
   tool_calls?: unknown[];
 };
 
-export type CheckpointRef = { checkpoint_id?: string; checkpoint_ns?: string };
+export type CheckpointRef = {
+  checkpoint_id?: string;
+  checkpoint_ns?: string;
+};
 
 export type MessageMeta = {
   branch?: string;
   branchOptions?: string[];
   firstSeenState?: { parent_checkpoint?: CheckpointRef | null };
+};
+
+export type UserThread = {
+  id: string;
+  user_id: string;
+  thread_id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ChatbotBarProps = {
+  onClose?: () => void;
 };

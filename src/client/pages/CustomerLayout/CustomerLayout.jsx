@@ -1,3 +1,4 @@
+// my-app-FE\src\pages\CustomerLayout\CustomerLayout.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { Outlet } from "react-router-dom";
 import styles from "./CustomerLayout.module.css";
