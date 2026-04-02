@@ -1,6 +1,6 @@
 import styles from '../Login.module.css';
-import Input from '../../../components/Input/Input';
-import Button from '../../../components/Button/Button';
+import Input from '../../Input/Input';
+import Button from '../../Button/Button';
 
 const LoginForm = ({ formData, handleChange, handleSubmit }) => {
   return (

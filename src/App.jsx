@@ -1,33 +1,59 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import Login from "./client/pages/Login/Login";
-import Dashboard from "./client/pages/Dashboard/Dashboard";
 import CustomerLayout from "./client/pages/CustomerLayout/CustomerLayout";
 import CustomerOverview from "./client/pages/CustomerLayout/screens/CustomerOverview/CustomerOverview";
 import AccountScreen from "./client/pages/CustomerLayout/screens/AccountScreen/AccountScreen";
 import TransferScreen from "./client/pages/CustomerLayout/screens/TransferScreen/TransferScreen";
 
 import AdminLayout from "./admin/pages/AdminLayout/AdminLayout";
-import AdminDashboard from "./admin/pages/AdminDashboard/AdminDashboard";
+import AdminOverview from "./admin/pages/AdminOverview/AdminOverview";
+import AdminUsers from "./admin/pages/AdminUsers/AdminUsers";
+import AdminCustomers from "./admin/pages/AdminCustomers/AdminCustomers";
+import AdminAccounts from "./admin/pages/AdminAccounts/AdminAccounts";
+import AdminCards from "./admin/pages/AdminCards/AdminCards";
+import AdminTransactions from "./admin/pages/AdminTransactions/AdminTransactions";
+import AdminLogin from "./admin/pages/AdminLogin/AdminLogin";
+
+import AdminProtectedRoute from "./admin/router/AdminProtectedRoute";   
+import AdminPublicRoute from "./admin/router/AdminPublicRoute";
+import ClientProtectedRoute from "./client/router/ClientProtectedRoute";
+import ClientPublicRoute from "./client/router/ClientPublicRoute";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
-        
-        <Route path="/customer" element={<CustomerLayout />}>
-          <Route index element={<Navigate to="overview" replace />} />
-          <Route path="overview" element={<CustomerOverview />} />
-          <Route path="accounts" element={<AccountScreen />} />
-          <Route path="transfer" element={<TransferScreen />} />
+
+        <Route element={<ClientPublicRoute />}>
+          <Route path="/login" element={<Login />} />
         </Route>
 
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="users" element={<div style={{padding: 32}}><h2>Admin Users</h2><p>Coming soon...</p></div>} />
-          <Route path="settings" element={<div style={{padding: 32}}><h2>Admin Settings</h2><p>Coming soon...</p></div>} />
+        <Route element={<ClientProtectedRoute />}>
+          <Route path="/customer" element={<CustomerLayout />}>
+            <Route index element={<Navigate to="overview" replace />} />
+            <Route path="overview" element={<CustomerOverview />} />
+            <Route path="accounts" element={<AccountScreen />} />
+            <Route path="transfer" element={<TransferScreen />} />
+          </Route>
+        </Route>
+
+        <Route element={<AdminPublicRoute />}>
+          <Route path="/admin/login" element={<AdminLogin />} />
+        </Route>
+
+        <Route element={<AdminProtectedRoute />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Navigate to="overviews" replace />} />
+            <Route path="overviews" element={<AdminOverview />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="customers" element={<AdminCustomers />} />
+            <Route path="accounts/list" element={<AdminAccounts />} />
+            <Route path="accounts/pending" element={<AdminAccounts />} />
+            <Route path="cards" element={<AdminCards />} />
+            <Route path="transactions" element={<AdminTransactions />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

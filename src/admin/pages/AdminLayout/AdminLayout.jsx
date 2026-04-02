@@ -1,16 +1,27 @@
+//src/admin/pages/AdminLayout/AdminLayout.jsx
+import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import AdminSidebar from "../../components/AdminSidebar/AdminSidebar";
-import AdminHeader from "../../components/AdminHeader/AdminHeader";
-import "../../styles/admin-globals.css";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import Header from "../../components/Header/Header";
 import styles from "./AdminLayout.module.css";
 
 export default function AdminLayout() {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarCollapsed((prev) => !prev);
+  };
+
   return (
-    <div className={`admin-body-reset ${styles.layoutWrapper}`}>
-      <AdminSidebar />
-      <div className={styles.mainContent}>
-        <AdminHeader />
-        <main className={styles.pageContainer}>
+    <div className={styles.layout}>
+      <Header
+        sidebarCollapsed={sidebarCollapsed}
+        onToggleSidebar={toggleSidebar}
+      />
+
+      <div className={styles.body}>
+        <Sidebar collapsed={sidebarCollapsed} />
+        <main className={styles.content}>
           <Outlet />
         </main>
       </div>

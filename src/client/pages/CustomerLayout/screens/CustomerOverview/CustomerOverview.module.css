@@ -1,4 +1,13 @@
 .wrapper {
-  padding: 24px;
+  padding: 32px 40px;
+  max-width: 1280px;
+  margin: 0 auto;
   position: relative;
+  background: #ffffff;
+  min-height: 100%;
+}
+@media (max-width: 768px) {
+  .wrapper {
+    padding: 16px;
+  }
 }

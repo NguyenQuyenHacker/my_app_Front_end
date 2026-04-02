@@ -1,18 +1,26 @@
 .layout {
-  background: #f5f7fa;
-  color: #1f2937;
+  background: #f3f4f6;
+  color: #111827;
   font-family: "Inter", sans-serif;
-  height: 100vh;
+  width: calc(100vw / 0.9);
+  height: calc(100vh / 0.9);
   overflow: hidden;
   display: flex;
+  flex-direction: row;
   transition: color 0.2s ease, background-color 0.2s ease;
+  zoom: 0.9;
 }
 
-.contentBar {
-  flex: 1;
-  min-width: 0;
+.mainWrapper {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.body {
+  display: flex;
+  flex: 1;
   overflow: hidden;
 }
 
@@ -20,15 +28,15 @@
   flex: 1;
   overflow-y: auto;
   position: relative;
-  background: #f5f7fa;
+  background: #f3f4f6;
 }
 
 .chatbotBar {
-  background: #ffffff;
-  border-left: 1px solid #e5e7eb;
+  background: #1e1e1e;
+  border-left: 1px solid #3f3f46;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08);
+  box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
   z-index: 30;
   flex-shrink: 0;
   position: relative;

@@ -2,9 +2,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Outlet } from "react-router-dom";
 import styles from "./CustomerLayout.module.css";
-import Header from "./components/Header/Header";
-import ChatbotBar from "./components/ChatbotBar/ChatbotBar.tsx";
-import Splitter from "./components/Splitter";
+import Header from "../../components/Header/Header";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import ChatbotBar from "../../components/ChatbotBar/ChatbotBar";
+import Splitter from "../../components/Splitter/Splitter";
 
 export default function CustomerLayout() {
   const MIN_WIDTH = 320;
@@ -13,6 +14,7 @@ export default function CustomerLayout() {
   const [chatbotWidth, setChatbotWidth] = useState(360);
   const [isDragging, setIsDragging] = useState(false);
   const [isChatbotOpen, setIsChatbotOpen] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const layoutRef = useRef(null);
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export default function CustomerLayout() {
       if (!layoutRef.current) return;
 
       const rect = layoutRef.current.getBoundingClientRect();
-      const nextWidth = rect.right - e.clientX;
+      const nextWidth = (rect.right - e.clientX) / 0.9;
 
       if (nextWidth < MIN_WIDTH) {
         setChatbotWidth(MIN_WIDTH);
@@ -58,14 +60,24 @@ export default function CustomerLayout() {
   }, [isDragging, isChatbotOpen]);
 
   const toggleChatbot = () => setIsChatbotOpen((prev) => !prev);
+  const toggleSidebar = () => setSidebarCollapsed((prev) => !prev);
 
   return (
     <div className={styles.layout} ref={layoutRef}>
-      <div className={styles.contentBar}>
-        <Header onToggleChatbot={toggleChatbot} />
-        <main className={styles.screensBar}>
-          <Outlet />
-        </main>
+      <div className={styles.mainWrapper}>
+        <Header 
+          onToggleChatbot={toggleChatbot} 
+          sidebarCollapsed={sidebarCollapsed}
+          onToggleSidebar={toggleSidebar}
+        />
+
+        <div className={styles.body}>
+          <Sidebar collapsed={sidebarCollapsed} />
+          
+          <main className={styles.screensBar}>
+            <Outlet />
+          </main>
+        </div>
       </div>
 
       {isChatbotOpen && (
@@ -78,4 +90,4 @@ export default function CustomerLayout() {
       )}
     </div>
   );
-}
+}
