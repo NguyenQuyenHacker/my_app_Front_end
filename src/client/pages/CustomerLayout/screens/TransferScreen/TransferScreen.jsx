@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createTransfer } from "../../../../api/transferApi";
 import styles from "./TransferScreen.module.css";
+import { clearClientToken } from "../../../../../utils/authUtils";
 
 const initialForm = {
   receiver_bank_name: "TCB",
@@ -65,7 +66,7 @@ const TransferScreen = () => {
       setForm(initialForm);
     } catch (error) {
       if (error.response?.status === 401) {
-        localStorage.removeItem("token");
+        clearClientToken();
         navigate("/login");
         return;
       }

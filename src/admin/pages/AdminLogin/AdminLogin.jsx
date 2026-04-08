@@ -4,8 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { Globe, CircleHelp } from 'lucide-react';
 import styles from './AdminLogin.module.css';
 import { loginAdmin } from '../../api/adminApi';
+import { setAdminToken } from '../../../utils/authUtils';
+import { useAdmin } from '../../context/AdminContext';
 
 const AdminLogin = () => {
+  const { fetchAdminMe } = useAdmin();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -21,12 +24,22 @@ const AdminLogin = () => {
       const data = await loginAdmin(email, password);
 
       if (data?.access_token) {
-        localStorage.setItem('admin_access_token', data.access_token);
+        setAdminToken(data.access_token);
+        // Sync fresh data from backend via context
+        await fetchAdminMe();
+        navigate('/admin/overviews');
+      } else {
+        throw new Error('No access token received');
       }
-
-      navigate('/admin/dashboard');
     } catch (err) {
-      setError(err?.response?.data?.detail || 'Invalid email or password');
+      // Unified error message for security
+      let errorMessage = err?.response?.data?.detail || 'Invalid email or password';
+      
+      if (errorMessage === "ADMIN_LOCKED") {
+        errorMessage = "Tài khoản quản trị đã bị vô hiệu hóa. Vui lòng liên hệ Quản trị viên hệ thống để được hỗ trợ.";
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -101,7 +114,22 @@ const AdminLogin = () => {
                 />
               </div>
 
-              {error && <div className={styles.errorBox}>{error}</div>}
+              {error && (
+                <div className={styles.errorBox} role="alert">
+                  <svg 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    style={{ width: '18px', height: '18px', flexShrink: 0, marginTop: '2px' }}
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span>{error}</span>
+                </div>
+              )}
 
               <div className={styles.buttonContainer}>
                 <button

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../../api/userApi";
+import { clearClientToken } from "../../../utils/authUtils";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const Dashboard = () => {
         setData(result);
       } catch (error) {
         if (error.response?.status === 401) {
-          localStorage.removeItem("token");
+          clearClientToken();
           navigate("/login");
         } else {
           console.error(error);

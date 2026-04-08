@@ -1,84 +1,97 @@
 // src/admin/pages/AdminUsers/AdminUsers.jsx
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "./AdminUsers.module.css";
-
-const initialUsers = [
-  {
-    user_id: "u_001",
-    full_name: "Nguyễn Văn An",
-    is_active: true,
-    role: "customer",
-    account_no: "19036668889999",
-    phone: "0901234567",
-  },
-  {
-    user_id: "u_002",
-    full_name: "Trần Thị Bình",
-    is_active: false,
-    role: "customer",
-    account_no: "19036668880001",
-    phone: "0912345678",
-  },
-  {
-    user_id: "u_003",
-    full_name: "Lê Văn Cường",
-    is_active: true,
-    role: "customer",
-    account_no: "19036668880002",
-    phone: "0988888888",
-  },
-  {
-    user_id: "u_004",
-    full_name: "Phạm Thị Duyên",
-    is_active: true,
-    role: "customer",
-    account_no: "19036668880003",
-    phone: "0977777777",
-  },
-  {
-    user_id: "u_005",
-    full_name: "Hoàng Minh Đức",
-    is_active: true,
-    role: "customer",
-    account_no: "19036668880004",
-    phone: "0966666666",
-  },
-];
+import { getCustomers, updateCustomerStatus } from "../../api/user_barApi";
 
 export default function AdminUsers() {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [updatingAccountNo, setUpdatingAccountNo] = useState("");
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const data = await getCustomers();
+      setUsers(Array.isArray(data) ? data : []);
+      setError("");
+    } catch (err) {
+      console.error("Error fetching customers:", err);
+      setError("Không thể tải danh sách người dùng.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const filteredUsers = useMemo(() => {
     const keyword = search.trim().toLowerCase();
     if (!keyword) return users;
 
     return users.filter((item) => {
+      const fullName = item.full_name?.toLowerCase() || "";
+      const accountNo = item.account_no || "";
+      const statusText = item.is_active ? "đang hoạt động" : "đã khóa";
+
       return (
-        item.full_name.toLowerCase().includes(keyword) ||
-        item.user_id.toLowerCase().includes(keyword) ||
-        item.account_no.includes(keyword) ||
-        item.phone.includes(keyword)
+        fullName.includes(keyword) ||
+        accountNo.includes(keyword) ||
+        statusText.includes(keyword)
       );
     });
   }, [users, search]);
 
-  const toggleStatus = (userId) => {
-    setUsers((prev) =>
-      prev.map((item) =>
-        item.user_id === userId
-          ? { ...item, is_active: !item.is_active }
-          : item
-      )
-    );
+  const toggleStatus = async (accountNo, currentStatus) => {
+    try {
+      setUpdatingAccountNo(accountNo);
+
+      const nextStatus = !currentStatus;
+
+      await updateCustomerStatus(accountNo, nextStatus);
+
+      setUsers((prev) =>
+        prev.map((item) =>
+          item.account_no === accountNo
+            ? { ...item, is_active: nextStatus }
+            : item
+        )
+      );
+    } catch (err) {
+      console.error("Error updating customer status:", err);
+      alert("Không thể cập nhật trạng thái tài khoản.");
+    } finally {
+      setUpdatingAccountNo("");
+    }
   };
+
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.emptyState}>Đang tải dữ liệu...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.emptyState} style={{ color: "red" }}>
+          {error}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>
       <section className={styles.pageHeader}>
         <div>
           <p className={styles.eyebrow}>USER MANAGEMENT</p>
-          <h1 className={styles.pageTitle}>Admin Users</h1>
+          <h1 className={styles.pageTitle}>User List</h1>
           <p className={styles.pageDesc}>
             Quản lý user, trạng thái hoạt động và thao tác khóa / mở khóa tài khoản.
           </p>
@@ -86,7 +99,7 @@ export default function AdminUsers() {
 
         <input
           type="text"
-          placeholder="Tìm theo tên, user id, account, phone..."
+          placeholder="Tìm theo tên hoặc số tài khoản..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className={styles.searchInput}
@@ -98,67 +111,68 @@ export default function AdminUsers() {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>User</th>
-                <th>Account No</th>
-                <th>Phone</th>
-                <th>Status</th>
-                <th>Role</th>
-                <th>Action</th>
+                <th>Họ tên</th>
+                <th>Số tài khoản</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.map((item) => (
-                <tr key={item.user_id}>
-                  <td>
-                    <div className={styles.userCell}>
-                      <div className={styles.avatar}>
-                        {item.full_name.charAt(0)}
+              {filteredUsers.map((item, index) => {
+                const isUpdating = updatingAccountNo === item.account_no;
+
+                return (
+                  <tr key={item.account_no || index}>
+                    <td>
+                      <div className={styles.userCell}>
+                        <div className={styles.avatar}>
+                          {item.full_name?.trim()?.charAt(0)?.toUpperCase() || "?"}
+                        </div>
+                        <div>
+                          <div className={styles.userName}>{item.full_name}</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className={styles.userName}>{item.full_name}</div>
-                        <div className={styles.userId}>{item.user_id}</div>
-                      </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  <td className={styles.mono}>{item.account_no}</td>
-                  <td className={styles.mono}>{item.phone}</td>
+                    <td className={styles.mono}>{item.account_no}</td>
 
-                  <td>
-                    <span
-                      className={
-                        item.is_active
-                          ? `${styles.statusBadge} ${styles.active}`
-                          : `${styles.statusBadge} ${styles.locked}`
-                      }
-                    >
-                      {item.is_active ? "Active" : "Locked"}
-                    </span>
-                  </td>
+                    <td>
+                      <span
+                        className={
+                          item.is_active
+                            ? `${styles.statusBadge} ${styles.active}`
+                            : `${styles.statusBadge} ${styles.locked}`
+                        }
+                      >
+                        {item.is_active ? "Đang hoạt động" : "Đã khóa"}
+                      </span>
+                    </td>
 
-                  <td>
-                    <span className={styles.roleBadge}>{item.role}</span>
-                  </td>
-
-                  <td>
-                    <button
-                      type="button"
-                      onClick={() => toggleStatus(item.user_id)}
-                      className={
-                        item.is_active
-                          ? `${styles.actionBtn} ${styles.lockBtn}`
-                          : `${styles.actionBtn} ${styles.unlockBtn}`
-                      }
-                    >
-                      {item.is_active ? "Khóa TK" : "Mở khóa"}
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                    <td>
+                      <button
+                        type="button"
+                        onClick={() => toggleStatus(item.account_no, item.is_active)}
+                        disabled={isUpdating}
+                        className={
+                          item.is_active
+                            ? `${styles.actionBtn} ${styles.lockBtn}`
+                            : `${styles.actionBtn} ${styles.unlockBtn}`
+                        }
+                      >
+                        {isUpdating
+                          ? "Đang xử lý..."
+                          : item.is_active
+                          ? "Khóa TK"
+                          : "Mở khóa"}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
 
               {filteredUsers.length === 0 && (
                 <tr>
-                  <td colSpan="6" className={styles.emptyState}>
+                  <td colSpan={4} className={styles.emptyState}>
                     Không tìm thấy dữ liệu phù hợp.
                   </td>
                 </tr>

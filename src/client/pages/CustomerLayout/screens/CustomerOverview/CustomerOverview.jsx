@@ -4,6 +4,7 @@ import styles from "./CustomerOverview.module.css";
 import { getCurrentUser } from "../../../../api/userApi";
 import CustomerInfo from "./components/CustomerInfo";
 import CustomerService from "./components/CustomerService";
+import { clearClientToken } from "../../../../../utils/authUtils";
 
 export default function CustomerOverview() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ export default function CustomerOverview() {
         setCustomer(result);
       } catch (err) {
         if (err.response?.status === 401) {
-          localStorage.removeItem("token");
+          clearClientToken();
           navigate("/login");
         } else {
           console.error(err);

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { getAccountOverview } from "../../../../api/accountApi";
 import styles from "./AccountScreen.module.css";
+import { clearClientToken } from "../../../../../utils/authUtils";
 
 import AccountSummary from "./components/AccountSummary";
 import AccountCard from "./components/AccountCard";
@@ -28,7 +29,7 @@ const AccountScreen = () => {
         setData(result);
       } catch (error) {
         if (error.response?.status === 401) {
-          localStorage.removeItem("token");
+          clearClientToken();
           navigate("/login");
           return;
         }

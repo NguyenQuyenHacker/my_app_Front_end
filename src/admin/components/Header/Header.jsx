@@ -2,8 +2,10 @@
 import React from "react";
 import { Bell, ChevronDown, Menu, User, Search, HeadphonesIcon, Settings } from "lucide-react";
 import styles from "./Header.module.css";
+import { useAdmin } from "../../context/AdminContext";
 
 const Header = ({ onToggleSidebar, sidebarCollapsed }) => {
+  const { adminName, adminCode } = useAdmin();
   return (
     <header className={styles.header}>
       <div className={`${styles.left} ${sidebarCollapsed ? styles.leftCollapsed : ''}`}>
@@ -28,25 +30,9 @@ const Header = ({ onToggleSidebar, sidebarCollapsed }) => {
         </div>
 
         <div className={styles.right}>
-          <div className={styles.searchBar}>
-            <Search size={16} className={styles.searchIcon} />
-            <input type="text" placeholder="Tìm tính năng, mã CK..." className={styles.searchInput} />
-          </div>
 
-          <div className={styles.actions}>
-            <div className={styles.actionItem}>
-              <Settings size={20} />
-              <span>Công cụ</span>
-            </div>
-            <div className={styles.actionItem}>
-              <HeadphonesIcon size={20} />
-              <span>Hỗ trợ</span>
-            </div>
-            <button className={`${styles.actionItem} ${styles.iconButton}`} type="button">
-              <Bell size={20} />
-              <span className={styles.badge}>3</span>
-            </button>
-          </div>
+
+
 
           <div className={styles.profile}>
             <div className={styles.avatar}>
@@ -54,8 +40,8 @@ const Header = ({ onToggleSidebar, sidebarCollapsed }) => {
             </div>
 
             <div className={styles.profileText}>
-              <span className={styles.name}>Admin User</span>
-              <span className={styles.role}>105C439774</span>
+              <span className={styles.name}>{adminName}</span>
+              <span className={styles.role}>{adminCode}</span>
             </div>
 
             <ChevronDown size={14} className={styles.chevron} />

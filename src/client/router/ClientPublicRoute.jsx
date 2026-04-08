@@ -1,11 +1,12 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import { getClientToken, isTokenExpired } from "../../utils/authUtils";
 
 const ClientPublicRoute = () => {
-  const token = localStorage.getItem("token");
+  const token = getClientToken();
 
-  if (token) {
-    return <Navigate to="/customer/overview" replace />;
+  if (token && !isTokenExpired(token)) {
+    return <Navigate to="/customer" replace />;
   }
 
   return <Outlet />;

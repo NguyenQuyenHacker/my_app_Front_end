@@ -8,12 +8,13 @@ import {
   LogOut,
 } from "lucide-react";
 import styles from "./Sidebar.module.css";
+import { clearClientToken } from "../../../utils/authUtils";
 
 const Sidebar = ({ collapsed = false }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("customer_access_token");
+    clearClientToken();
     navigate("/login");
   };
 

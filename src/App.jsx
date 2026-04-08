@@ -15,10 +15,18 @@ import AdminCards from "./admin/pages/AdminCards/AdminCards";
 import AdminTransactions from "./admin/pages/AdminTransactions/AdminTransactions";
 import AdminLogin from "./admin/pages/AdminLogin/AdminLogin";
 
+// Knowledge Base Module
+import KnowledgeBaseListPage from "./admin/pages/AdminKnowledgeBase/KnowledgeBaseListPage";
+import KnowledgeBaseDetailLayout from "./admin/pages/AdminKnowledgeBase/KnowledgeBaseDetail/KnowledgeBaseDetailLayout";
+import DatasetTab from "./admin/pages/AdminKnowledgeBase/KnowledgeBaseDetail/tabs/DatasetTab";
+import ConfigurationTab from "./admin/pages/AdminKnowledgeBase/KnowledgeBaseDetail/tabs/ConfigurationTab";
+
 import AdminProtectedRoute from "./admin/router/AdminProtectedRoute";   
 import AdminPublicRoute from "./admin/router/AdminPublicRoute";
 import ClientProtectedRoute from "./client/router/ClientProtectedRoute";
 import ClientPublicRoute from "./client/router/ClientPublicRoute";
+
+import { AdminProvider } from "./admin/context/AdminContext";
 
 function App() {
   return (
@@ -39,20 +47,30 @@ function App() {
           </Route>
         </Route>
 
-        <Route element={<AdminPublicRoute />}>
-          <Route path="/admin/login" element={<AdminLogin />} />
-        </Route>
+        <Route element={<AdminProvider />}>
+          <Route element={<AdminPublicRoute />}>
+            <Route path="/admin/login" element={<AdminLogin />} />
+          </Route>
 
-        <Route element={<AdminProtectedRoute />}>
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Navigate to="overviews" replace />} />
-            <Route path="overviews" element={<AdminOverview />} />
-            <Route path="users" element={<AdminUsers />} />
-            <Route path="customers" element={<AdminCustomers />} />
-            <Route path="accounts/list" element={<AdminAccounts />} />
-            <Route path="accounts/pending" element={<AdminAccounts />} />
-            <Route path="cards" element={<AdminCards />} />
-            <Route path="transactions" element={<AdminTransactions />} />
+          <Route element={<AdminProtectedRoute />}>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Navigate to="overviews" replace />} />
+              <Route path="overviews" element={<AdminOverview />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="customers" element={<AdminUsers />} />
+              <Route path="accounts/list" element={<AdminAccounts />} />
+              <Route path="accounts/pending" element={<AdminAccounts />} />
+              <Route path="cards" element={<AdminCards />} />
+              <Route path="transactions" element={<AdminTransactions />} />
+
+              {/* Knowledge Base Module */}
+              <Route path="knowledge-bases" element={<KnowledgeBaseListPage />} />
+              <Route path="knowledge-bases/:kbId" element={<KnowledgeBaseDetailLayout />}>
+                <Route index element={<Navigate to="documents" replace />} />
+                <Route path="documents" element={<DatasetTab />} />
+                <Route path="configuration" element={<ConfigurationTab />} />
+              </Route>
+            </Route>
           </Route>
         </Route>
       </Routes>

@@ -75,6 +75,7 @@ import styles from "./Login.module.css";
 import { loginUser } from "../../api/userApi";
 import Brand from "./components/Login_brand";
 import LoginForm from "./components/Login_form";
+import { setClientToken } from "../../../utils/authUtils";
 
 
 const Login = () => {
@@ -86,6 +87,17 @@ const Login = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // =========================
+  // Auto-hide error toast
+  // =========================
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(""), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   // =========================
   // Handle input change
@@ -123,24 +135,28 @@ const Login = () => {
 
     try {
       setLoading(true);
+      setError(""); // Clear previous errors
 
       const result = await loginUser(
         formData.phone,
         formData.password
       );
 
-      // ✅ Lưu token
-      localStorage.setItem("token", result.access_token);
-
-      // ✅ Chuyển trang sau login
-      navigate("/customer");
+      if (result?.access_token) {
+        setClientToken(result.access_token);
+        navigate("/customer");
+      } else {
+        throw new Error("No access token received");
+      }
 
     } catch (error) {
-      if (error.response?.status === 401) {
-        alert("Sai số điện thoại hoặc mật khẩu");
-      } else {
-        alert("Lỗi hệ thống, vui lòng thử lại");
+      let errorMessage = error.response?.data?.detail || "Sai số điện thoại hoặc mật khẩu";
+      
+      if (errorMessage === "ACCOUNT_LOCKED") {
+        errorMessage = "Tài khoản của quý khách hiện đang bị tạm khóa. Vui lòng liên hệ hotline 1800 588 822 để được hỗ trợ khai mở.";
       }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -154,6 +170,7 @@ const Login = () => {
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         loading={loading}
+        error={error}
       />
     </main>
   );
