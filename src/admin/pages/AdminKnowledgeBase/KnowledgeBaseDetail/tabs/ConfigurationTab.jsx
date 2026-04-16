@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { Save, Info, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import styles from './ConfigurationTab.module.css';
-import { updateKnowledgeBaseConfig } from '../../../../api/knowledge_baseApi';
+import { updateKnowledgeBaseConfig, updateKnowledgeBaseMetadata } from '../../../../api/knowledge_baseApi';
 
 // Helper: xây dựng state form từ dữ liệu KB
 const getFormFromKb = (kb) => ({
@@ -57,13 +57,23 @@ const ConfigurationTab = () => {
 
     setIsSaving(true);
     try {
-      await updateKnowledgeBaseConfig(kb.id, { chunk_size: size, chunk_overlap: overlap });
-      setKb(prev => ({ ...prev, chunk_size: size, chunk_overlap: overlap }));
+      await Promise.all([
+        updateKnowledgeBaseConfig(kb.id, { chunk_size: size, chunk_overlap: overlap }),
+        updateKnowledgeBaseMetadata(kb.id, { name: formData.name, description: formData.description })
+      ]);
+      
+      setKb(prev => ({ 
+        ...prev, 
+        chunk_size: size, 
+        chunk_overlap: overlap,
+        name: formData.name,
+        description: formData.description
+      }));
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (err) {
       console.error("Failed to save config:", err);
-      setError(err.response?.data?.detail || "Không thể cập nhật cấu hình");
+      setError(err.response?.data?.detail || "Không thể cập nhật cấu hình hoặc thông tin");
     } finally {
       setIsSaving(false);
     }

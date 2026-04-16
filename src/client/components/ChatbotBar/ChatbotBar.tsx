@@ -1,71 +1,110 @@
 /// <reference types="vite/client" />
-
-import React, { useState } from "react";
-import { X, Send } from "lucide-react";
+import { useEffect, useState } from "react";
+import { UserThread, ChatbotBarProps } from "./core/types";
+import { fetchMyThreads, createNewThread } from "./core/api";
+import { HistoryView } from "./components/HistoryView";
+import { ChatView } from "./components/ChatView";
 import styles from "./ChatbotBar.module.css";
 
-interface ChatbotBarProps {
-  onClose: () => void;
-}
+export default function ChatbotBar({ onClose }: ChatbotBarProps) {
+  const [threads, setThreads] = useState<UserThread[]>([]);
+  const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
+  const [status, setStatus] = useState<"idle" | "loading" | "error" | "success">(
+    "idle"
+  );
+  const [errorMsg, setErrorMsg] = useState("");
+  const [showHistory, setShowHistory] = useState(false);
 
-const ChatbotBar: React.FC<ChatbotBarProps> = ({ onClose }) => {
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Xin chào! Tôi có thể giúp gì cho bạn hôm nay?", sender: "bot" }
-  ]);
-  const [inputValue, setInputValue] = useState("");
-
-  const handleSend = () => {
-    if (!inputValue.trim()) return;
-    
-    setMessages(prev => [
-      ...prev, 
-      { id: Date.now(), text: inputValue, sender: "user" }
-    ]);
-    const currentInput = inputValue;
-    setInputValue("");
-
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev, 
-        { id: Date.now() + 1, text: `Tôi đã nhận được yêu cầu: "${currentInput}". Xin lỗi, tôi hiện đang trong quá trình nâng cấp.`, sender: "bot" }
-      ]);
-    }, 1000);
+  const loadThreads = async () => {
+    const data = await fetchMyThreads();
+    setThreads(data);
+    if (data.length > 0) {
+      setActiveThreadId((prev) => prev ?? data[0].thread_id);
+    } else {
+      setActiveThreadId(null);
+    }
   };
 
+  const handleCreateNewThread = async () => {
+    try {
+      const saved = await createNewThread();
+      setThreads((prev) => [saved, ...prev]);
+      setActiveThreadId(saved.thread_id);
+      setShowHistory(false);
+    } catch (error) {
+      console.error(error);
+      alert("Không thể tạo chat mới.");
+    }
+  };
+
+  const handleSelectThread = (threadId: string) => {
+    setActiveThreadId(threadId);
+    setShowHistory(false);
+  };
+
+  useEffect(() => {
+    let mounted = true;
+    setStatus("loading");
+
+    loadThreads()
+      .then(() => {
+        if (!mounted) return;
+        setStatus("success");
+      })
+      .catch((err) => {
+        if (!mounted) return;
+        console.error(err);
+        setErrorMsg(
+          err instanceof Error ? err.message : "Không tải được danh sách thread"
+        );
+        setStatus("error");
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (status === "loading") {
+    return <div className={styles.centerState}>Đang tải lịch sử chat...</div>;
+  }
+
+  if (status === "error") {
+    return <div className={styles.centerError}>Lỗi: {errorMsg}</div>;
+  }
+
   return (
-    <div className={styles.chatbotContainer}>
-      <div className={styles.header}>
-        <div className={styles.title}>
-          <span>Trợ lý ảo AI</span>
-        </div>
-        <button className={styles.closeButton} onClick={onClose} aria-label="Đóng chatbot">
-          <X size={20} />
-        </button>
-      </div>
-      
-      <div className={styles.chatArea}>
-        {messages.map((msg) => (
-          <div key={msg.id} className={`${styles.message} ${msg.sender === "user" ? styles.user : styles.bot}`}>
-            {msg.text}
-          </div>
-        ))}
-      </div>
-      
-      <div className={styles.inputArea}>
-        <input 
-          type="text" 
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder="Nhập câu hỏi..." 
-          className={styles.input}
+    <div className={styles.wrapper}>
+      {showHistory ? (
+        <HistoryView
+          threads={threads}
+          activeThreadId={activeThreadId}
+          onSelectThread={handleSelectThread}
+          onBackToChat={() => setShowHistory(false)}
+          onCreateNewThread={handleCreateNewThread}
         />
-        <button className={styles.sendButton} onClick={handleSend}>
-          <Send size={20} />
-        </button>
-      </div>
+      ) : activeThreadId ? (
+        <ChatView
+          threadId={activeThreadId}
+          onOpenHistory={() => setShowHistory(true)}
+          onCreateNewThread={handleCreateNewThread}
+          onClose={onClose}
+        />
+      ) : (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyStateCard}>
+            <h3>Chưa có cuộc trò chuyện nào</h3>
+            <p>Bắt đầu một cuộc trò chuyện mới với trợ lý AI.</p>
+            <button
+              type="button"
+              className={styles.historyNewButton}
+              onClick={handleCreateNewThread}
+            >
+              Tạo chat đầu tiên
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default ChatbotBar;
+}

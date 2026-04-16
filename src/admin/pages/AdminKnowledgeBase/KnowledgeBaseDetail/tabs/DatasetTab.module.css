@@ -123,6 +123,20 @@
   color: #002244;
 }
 
+.clickableFileName {
+  cursor: pointer;
+  color: #0f172a;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition: all 0.2s ease;
+}
+
+.clickableFileName:hover {
+  color: #e50020;
+  text-decoration-color: #e50020;
+}
+
 .badge {
   padding: 3px 9px;
   border-radius: 999px;

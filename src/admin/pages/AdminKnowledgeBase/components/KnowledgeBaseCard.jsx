@@ -1,21 +1,35 @@
 /* src/admin/pages/AdminKnowledgeBase/components/KnowledgeBaseCard.jsx */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Calendar, User, ChevronRight } from 'lucide-react';
+import { FileText, Calendar, User, ChevronRight, Power } from 'lucide-react';
 import styles from './KnowledgeBaseCard.module.css';
 
-const KnowledgeBaseCard = ({ kb }) => {
+const KnowledgeBaseCard = ({ kb, onToggle }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
     navigate(`/admin/knowledge-bases/${kb.id}/documents`);
   };
 
+  const handleToggleClick = (e) => {
+    e.stopPropagation();
+    if (onToggle) {
+      onToggle(kb.id, !kb.isActive);
+    }
+  };
+
   return (
-    <div className={styles.card} onClick={handleClick}>
+    <div className={`${styles.card} ${!kb.isActive ? styles.cardDisabled : ''}`} onClick={handleClick}>
       <div className={styles.cardHeader}>
         <div className={styles.iconWrapper}>
-          <FileText size={24} color="#e50020" />
+          <FileText size={24} color={kb.isActive ? "#e50020" : "#94a3b8"} />
+        </div>
+        <div 
+          className={`${styles.toggle} ${kb.isActive ? styles.toggleActive : ''}`}
+          onClick={handleToggleClick}
+          title={kb.isActive ? "Disable Knowledge Base" : "Enable Knowledge Base"}
+        >
+          <div className={styles.toggleHandle} />
         </div>
       </div>
       

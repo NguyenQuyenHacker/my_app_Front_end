@@ -1,21 +1,34 @@
 import adminApi from "./axios";
 
+const BASE_URL = "/admin/knowledge-bases";
+
 export const getKnowledgeBases = async () => {
-  const response = await adminApi.get("/admin/knowledge-bases");
+  const response = await adminApi.get(BASE_URL);
   return response.data;
 };
 
 export const createKnowledgeBase = async (data) => {
-  const response = await adminApi.post("/admin/knowledge-bases", data);
+  const response = await adminApi.post(BASE_URL, data);
   return response.data;
 };
+
 export const getKnowledgeBaseDocuments = async (kbId) => {
-  const response = await adminApi.get(`/admin/knowledge-bases/${kbId}/documents`);
+  const response = await adminApi.get(`${BASE_URL}/${kbId}/documents`);
   return response.data;
 };
 
 export const updateKnowledgeBaseConfig = async (kbId, data) => {
-  const response = await adminApi.patch(`/admin/knowledge-bases/${kbId}/config`, data);
+  const response = await adminApi.patch(`${BASE_URL}/${kbId}/config`, data);
+  return response.data;
+};
+
+export const toggleKnowledgeBaseStatus = async (kbId, isActive) => {
+  const response = await adminApi.patch(`${BASE_URL}/${kbId}/toggle`, { is_active: isActive });
+  return response.data;
+};
+
+export const updateKnowledgeBaseMetadata = async (kbId, data) => {
+  const response = await adminApi.patch(`${BASE_URL}/${kbId}`, data);
   return response.data;
 };
 
@@ -26,7 +39,7 @@ export const uploadKnowledgeBaseDocument = async (kbId, file, chunkSize, chunkOv
   formData.append('chunk_overlap', chunkOverlap);
 
   const response = await adminApi.post(
-    `/admin/knowledge-bases/${kbId}/documents/upload`,
+    `${BASE_URL}/${kbId}/documents/upload`,
     formData,
     {
       onUploadProgress: (progressEvent) => {
@@ -38,5 +51,15 @@ export const uploadKnowledgeBaseDocument = async (kbId, file, chunkSize, chunkOv
     }
   );
 
+  return response.data;
+};
+
+export const deleteKnowledgeBaseDocument = async (kbId, documentId) => {
+  const response = await adminApi.delete(`${BASE_URL}/${kbId}/documents/${documentId}`);
+  return response.data;
+};
+
+export const getDocumentChunks = async (kbId, documentId) => {
+  const response = await adminApi.get(`${BASE_URL}/${kbId}/documents/${documentId}/chunks`);
   return response.data;
 };

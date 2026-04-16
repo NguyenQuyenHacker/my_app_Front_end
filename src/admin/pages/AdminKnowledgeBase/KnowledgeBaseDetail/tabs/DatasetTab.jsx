@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Search, Plus, Filter, MoreVertical, RefreshCw, Trash2, Eye, Loader2 } from 'lucide-react';
 import styles from './DatasetTab.module.css';
-import { getKnowledgeBaseDocuments } from '../../../../api/knowledge_baseApi';
+import { getKnowledgeBaseDocuments, deleteKnowledgeBaseDocument } from '../../../../api/knowledge_baseApi';
 import FileUploadModal from './FileUploadModal';
+import ConfirmModal from '../../../../components/ConfirmModal/ConfirmModal';
+import DocumentChunksModal from './DocumentChunksModal';
 
 const DatasetTab = () => {
   const { kbId } = useParams();
@@ -12,6 +14,10 @@ const DatasetTab = () => {
   const [localDocuments, setLocalDocuments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [deleteModalState, setDeleteModalState] = useState({ isOpen: false, documentId: null });
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
+  const [chunksModalConfig, setChunksModalConfig] = useState({ isOpen: false, documentId: null, fileName: '' });
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -33,6 +39,34 @@ const DatasetTab = () => {
 
   const handleUploadSuccess = (newDoc) => {
     setLocalDocuments(prev => [newDoc, ...prev]);
+  };
+
+  const handleDeleteDocument = (documentId) => {
+    setDeleteError(null);
+    setDeleteModalState({ isOpen: true, documentId });
+  };
+
+  const handleConfirmDelete = async () => {
+    const { documentId } = deleteModalState;
+    if (!documentId) return;
+
+    try {
+      setIsDeleting(true);
+      setDeleteError(null);
+      await deleteKnowledgeBaseDocument(kbId, documentId);
+      
+      // Cập nhật state để UI biến mất dòng tài liệu đó ngay lập tức
+      setDocuments(prev => prev.filter(doc => doc.document_id !== documentId));
+      setLocalDocuments(prev => prev.filter(doc => doc.document_id !== documentId));
+      
+      setDeleteModalState({ isOpen: false, documentId: null });
+    } catch (error) {
+      console.error("Failed to delete document:", error);
+      const msg = error.response?.data?.detail || error.message || "Đã xảy ra lỗi không xác định khi xóa tài liệu.";
+      setDeleteError(msg);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const getStatusBadgeClass = (status) => {
@@ -80,6 +114,25 @@ const DatasetTab = () => {
         onUploadSuccess={handleUploadSuccess}
       />
 
+      <ConfirmModal 
+        isOpen={deleteModalState.isOpen}
+        onClose={() => setDeleteModalState({ isOpen: false, documentId: null })}
+        onConfirm={handleConfirmDelete}
+        title="Xóa tài liệu"
+        message="Bạn có chắc chắn muốn xóa tài liệu này? Mọi dữ liệu vector và nội dung liên quan sẽ bị loại bỏ vĩnh viễn khỏi hệ thống."
+        confirmText="Xóa tài liệu"
+        isLoading={isDeleting}
+        error={deleteError}
+      />
+
+      <DocumentChunksModal
+        isOpen={chunksModalConfig.isOpen}
+        onClose={() => setChunksModalConfig({ isOpen: false, documentId: null, fileName: '' })}
+        kbId={kbId}
+        documentId={chunksModalConfig.documentId}
+        fileName={chunksModalConfig.fileName}
+      />
+
       <div className={styles.tablePanel}>
         <table className={styles.table}>
           <thead>
@@ -106,7 +159,14 @@ const DatasetTab = () => {
               filteredDocuments.map((doc) => (
                 <tr key={doc.document_id}>
                   <td><input type="checkbox" /></td>
-                  <td className={styles.fileName}>{doc.file_name}</td>
+                  <td className={styles.fileName}>
+                    <span 
+                      className={styles.clickableFileName} 
+                      onClick={() => setChunksModalConfig({ isOpen: true, documentId: doc.document_id, fileName: doc.file_name })}
+                    >
+                      {doc.file_name}
+                    </span>
+                  </td>
                   <td>
                     <span className={`${styles.badge} ${getStatusBadgeClass(doc.parsing_status)}`}>
                       {doc.parsing_status}
@@ -118,7 +178,13 @@ const DatasetTab = () => {
                     <div className={styles.rowActions}>
                       <button className={styles.iconAction} title="View"><Eye size={16} /></button>
                       <button className={styles.iconAction} title="Re-parse"><RefreshCw size={16} /></button>
-                      <button className={styles.iconAction} title="Delete"><Trash2 size={16} /></button>
+                      <button 
+                        className={styles.iconAction} 
+                        title="Delete"
+                        onClick={() => handleDeleteDocument(doc.document_id)}
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                   </td>
                 </tr>
