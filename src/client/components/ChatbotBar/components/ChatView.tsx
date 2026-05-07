@@ -14,11 +14,13 @@ export function ChatView({
   threadId,
   onOpenHistory,
   onCreateNewThread,
+  onUpdateTitle,
   onClose,
 }: {
   threadId: string;
   onOpenHistory: () => void;
   onCreateNewThread: () => Promise<void>;
+  onUpdateTitle?: (threadId: string, title: string) => Promise<void>;
   onClose?: () => void;
 }) {
   const [prompt, setPrompt] = useState("");
@@ -57,6 +59,14 @@ export function ChatView({
     if (!text || stream.isLoading) return;
     setPrompt("");
     try {
+      // Auto-title if it's the first message
+      if (messages.length === 0 && onUpdateTitle) {
+        // Remove common punctuation: ?, ., ,, !, ...
+        const cleanText = text.replace(/[?.,!]+/g, "").trim();
+        const newTitle =
+          cleanText.length > 30 ? cleanText.substring(0, 30) + "..." : cleanText;
+        onUpdateTitle(threadId, newTitle || "Cuộc trò chuyện mới");
+      }
       await submitUserMessage(text);
     } catch (error) {
       console.error(error);

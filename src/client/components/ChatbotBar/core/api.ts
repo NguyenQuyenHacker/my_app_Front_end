@@ -38,3 +38,42 @@ export async function createNewThread(): Promise<UserThread> {
 
   return res.json();
 }
+
+export async function deleteThreadAPI(threadId: string): Promise<void> {
+  const token = getAccessToken();
+  if (!token) throw new Error("Chưa đăng nhập");
+
+  const res = await fetch(`${BACKEND_URL}/chat/threads/${threadId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Không xóa được cuộc trò chuyện: ${res.status}`);
+  }
+}
+
+export async function updateThreadTitleAPI(
+  threadId: string,
+  title: string
+): Promise<UserThread> {
+  const token = getAccessToken();
+  if (!token) throw new Error("Chưa đăng nhập");
+
+  const res = await fetch(`${BACKEND_URL}/chat/threads/${threadId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ title }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Không cập nhật được tiêu đề: ${res.status}`);
+  }
+
+  return res.json();
+}

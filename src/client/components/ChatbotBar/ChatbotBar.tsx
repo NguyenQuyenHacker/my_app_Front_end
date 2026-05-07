@@ -1,7 +1,12 @@
 /// <reference types="vite/client" />
 import { useEffect, useState } from "react";
 import { UserThread, ChatbotBarProps } from "./core/types";
-import { fetchMyThreads, createNewThread } from "./core/api";
+import {
+  fetchMyThreads,
+  createNewThread,
+  deleteThreadAPI,
+  updateThreadTitleAPI,
+} from "./core/api";
 import { HistoryView } from "./components/HistoryView";
 import { ChatView } from "./components/ChatView";
 import styles from "./ChatbotBar.module.css";
@@ -40,6 +45,36 @@ export default function ChatbotBar({ onClose }: ChatbotBarProps) {
   const handleSelectThread = (threadId: string) => {
     setActiveThreadId(threadId);
     setShowHistory(false);
+  };
+
+  const handleDeleteThread = async (threadId: string) => {
+    try {
+      await deleteThreadAPI(threadId);
+      setThreads((prev) => {
+        const remaining = prev.filter((t) => t.thread_id !== threadId);
+        if (remaining.length === 0) {
+          setShowHistory(false);
+        }
+        return remaining;
+      });
+      if (activeThreadId === threadId) {
+        setActiveThreadId(null);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Không thể xóa cuộc trò chuyện.");
+    }
+  };
+
+  const handleUpdateThreadTitle = async (threadId: string, title: string) => {
+    try {
+      const updated = await updateThreadTitleAPI(threadId, title);
+      setThreads((prev) =>
+        prev.map((t) => (t.thread_id === threadId ? updated : t))
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -82,12 +117,14 @@ export default function ChatbotBar({ onClose }: ChatbotBarProps) {
           onSelectThread={handleSelectThread}
           onBackToChat={() => setShowHistory(false)}
           onCreateNewThread={handleCreateNewThread}
+          onDeleteThread={handleDeleteThread}
         />
       ) : activeThreadId ? (
         <ChatView
           threadId={activeThreadId}
           onOpenHistory={() => setShowHistory(true)}
           onCreateNewThread={handleCreateNewThread}
+          onUpdateTitle={handleUpdateThreadTitle}
           onClose={onClose}
         />
       ) : (

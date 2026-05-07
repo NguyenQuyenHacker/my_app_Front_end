@@ -57,7 +57,7 @@ export function MessageCard({
   if (kind === "human") {
     return (
       <div key={messageId} className={`${styles.messageRow} ${styles.humanRow}`}>
-        <div className={styles.messageBlock}>
+        <div className={`${styles.messageBlock} ${styles.humanBlock}`}>
           {editing ? (
             <div className={`${styles.messageBubble} ${styles.humanBubble}`}>
               <textarea
@@ -121,7 +121,7 @@ export function MessageCard({
   if (kind === "ai") {
     return (
       <div key={messageId} className={`${styles.messageRow} ${styles.aiRow}`}>
-        <div className={styles.messageBlock}>
+        <div className={`${styles.messageBlock} ${styles.aiBlock}`}>
           <div className={`${styles.messageBubble} ${styles.aiBubble}`}>
             <MarkdownText>{text}</MarkdownText>
           </div>
