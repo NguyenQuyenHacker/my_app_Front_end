@@ -7,6 +7,7 @@ import { AppMessage, CheckpointRef, MessageMeta } from "../core/types";
 import { isVisibleMessage, getAccessToken } from "../core/utils";
 import { AGENT_URL, ASSISTANT_ID } from "../core/constants";
 import { MessageCard } from "./MessageCard";
+import { HITLApprovalRenderer } from "./HITLApprovalRenderer";
 import { ClockIcon, PlusIcon, SendIcon } from "./Icons";
 import styles from "../ChatbotBar.module.css";
 
@@ -25,7 +26,7 @@ export function ChatView({
 }) {
   const [prompt, setPrompt] = useState("");
 
-  const stream = useStream({
+  const stream = useStream<{ messages: BaseMessage[] }>({
     apiUrl: AGENT_URL,
     assistantId: ASSISTANT_ID,
     threadId,
@@ -42,6 +43,8 @@ export function ChatView({
     () => ((stream.messages ?? []) as BaseMessage[]).filter(isVisibleMessage),
     [stream.messages]
   );
+
+  const isInterrupted = !!stream.interrupt;
 
   const submitUserMessage = async (
     text: string,
@@ -167,7 +170,13 @@ export function ChatView({
           />
         ))}
 
-        {stream.isLoading && (
+        <HITLApprovalRenderer
+          interrupt={stream.interrupt}
+          submit={stream.submit}
+          isProcessing={stream.isLoading}
+        />
+
+        {stream.isLoading && !isInterrupted && (
           <div className={`${styles.messageRow} ${styles.aiRow}`}>
             <div className={`${styles.messageBubble} ${styles.aiBubble}`}>
               <div className={styles.typing}>
@@ -183,15 +192,15 @@ export function ChatView({
       <form className={styles.form} onSubmit={handleSubmit}>
         <input
           value={prompt}
-          disabled={stream.isLoading}
+          disabled={stream.isLoading || isInterrupted}
           className={styles.input}
-          placeholder="Nhập câu hỏi của bạn..."
+          placeholder={isInterrupted ? "Vui lòng xác nhận giao dịch bên trên..." : "Nhập câu hỏi của bạn..."}
           onChange={(e) => setPrompt(e.target.value)}
         />
         <button
           type="submit"
           className={styles.sendButton}
-          disabled={stream.isLoading || !prompt.trim()}
+          disabled={stream.isLoading || isInterrupted || !prompt.trim()}
           title={stream.isLoading ? "Đang gửi..." : "Gửi"}
           aria-label={stream.isLoading ? "Đang gửi..." : "Gửi"}
         >

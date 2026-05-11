@@ -29,11 +29,16 @@ export const getToolCalls = (msg: Partial<AppMessage>): unknown[] =>
 
 export const isVisibleMessage = (msg: BaseMessage): boolean => {
   const message = msg as AppMessage;
+
+  if (message.additional_kwargs?.lc_source === "summarization") {
+    return false;
+  }
+
   const kind = getMessageKind(message);
   const text = getMessageText(message).trim();
   const toolCalls = getToolCalls(message);
 
-  if (kind === "tool" || (kind === "ai" && !text && toolCalls.length > 0)) {
+  if (kind === "tool") {
     return false;
   }
 

@@ -20,6 +20,7 @@ const TransferScreen = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successData, setSuccessData] = useState(null);
+  const [step, setStep] = useState(1);
 
   const handleChange = (field) => (event) => {
     setForm((prev) => ({
@@ -28,21 +29,30 @@ const TransferScreen = () => {
     }));
   };
 
-  const validateForm = () => {
+  const validateStep1 = () => {
     if (!form.receiver_bank_name.trim()) return "Vui lòng nhập ngân hàng nhận.";
     if (!form.receiver_name.trim()) return "Vui lòng nhập tên người nhận.";
     if (!form.receiver_account_no.trim()) return "Vui lòng nhập số tài khoản nhận.";
     if (!form.amount || Number(form.amount) <= 0) return "Số tiền không hợp lệ.";
-    if (!form.otp.trim()) return "Vui lòng nhập OTP.";
     return "";
+  };
+
+  const handleNextStep = (event) => {
+    event.preventDefault();
+    const validationError = validateStep1();
+    if (validationError) {
+      setErrorMessage(validationError);
+      return;
+    }
+    setErrorMessage("");
+    setStep(2);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const validationError = validateForm();
-    if (validationError) {
-      setErrorMessage(validationError);
+    if (!form.otp.trim()) {
+      setErrorMessage("Vui lòng nhập OTP.");
       return;
     }
 
@@ -62,7 +72,7 @@ const TransferScreen = () => {
 
       const result = await createTransfer(payload);
       setSuccessData(result);
-
+      setStep(1);
       setForm(initialForm);
     } catch (error) {
       if (error.response?.status === 401) {
@@ -95,75 +105,80 @@ const TransferScreen = () => {
       </div>
 
       <div className={styles.card}>
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.grid}>
-            <div className={styles.field}>
-              <label className={styles.label}>Ngân hàng nhận</label>
-              <input
-                className={styles.input}
-                type="text"
-                value={form.receiver_bank_name}
-                onChange={handleChange("receiver_bank_name")}
-                placeholder="VD: TCB, VCB, MB..."
-              />
-            </div>
+        <form onSubmit={step === 1 ? handleNextStep : handleSubmit} className={styles.form}>
+          {step === 1 ? (
+            <div className={styles.grid}>
+              <div className={styles.field}>
+                <label className={styles.label}>Ngân hàng nhận</label>
+                <input
+                  className={styles.input}
+                  type="text"
+                  value={form.receiver_bank_name}
+                  onChange={handleChange("receiver_bank_name")}
+                  placeholder="VD: TCB, VCB, MB..."
+                />
+              </div>
 
-            <div className={styles.field}>
-              <label className={styles.label}>Tên người nhận</label>
-              <input
-                className={styles.input}
-                type="text"
-                value={form.receiver_name}
-                onChange={handleChange("receiver_name")}
-                placeholder="Nhập tên người nhận"
-              />
-            </div>
+              <div className={styles.field}>
+                <label className={styles.label}>Tên người nhận</label>
+                <input
+                  className={styles.input}
+                  type="text"
+                  value={form.receiver_name}
+                  onChange={handleChange("receiver_name")}
+                  placeholder="Nhập tên người nhận"
+                />
+              </div>
 
-            <div className={styles.field}>
-              <label className={styles.label}>Số tài khoản nhận</label>
-              <input
-                className={styles.input}
-                type="text"
-                value={form.receiver_account_no}
-                onChange={handleChange("receiver_account_no")}
-                placeholder="Nhập số tài khoản"
-              />
-            </div>
+              <div className={styles.field}>
+                <label className={styles.label}>Số tài khoản nhận</label>
+                <input
+                  className={styles.input}
+                  type="text"
+                  value={form.receiver_account_no}
+                  onChange={handleChange("receiver_account_no")}
+                  placeholder="Nhập số tài khoản"
+                />
+              </div>
 
-            <div className={styles.field}>
-              <label className={styles.label}>Số tiền</label>
-              <input
-                className={styles.input}
-                type="number"
-                min="1"
-                value={form.amount}
-                onChange={handleChange("amount")}
-                placeholder="Nhập số tiền"
-              />
-            </div>
+              <div className={styles.field}>
+                <label className={styles.label}>Số tiền</label>
+                <input
+                  className={styles.input}
+                  type="number"
+                  min="1"
+                  value={form.amount}
+                  onChange={handleChange("amount")}
+                  placeholder="Nhập số tiền"
+                />
+              </div>
 
-            <div className={`${styles.field} ${styles.fullWidth}`}>
-              <label className={styles.label}>Nội dung</label>
-              <input
-                className={styles.input}
-                type="text"
-                value={form.description}
-                onChange={handleChange("description")}
-                placeholder="Nhập nội dung chuyển khoản"
-              />
+              <div className={`${styles.field} ${styles.fullWidth}`}>
+                <label className={styles.label}>Nội dung</label>
+                <input
+                  className={styles.input}
+                  type="text"
+                  value={form.description}
+                  onChange={handleChange("description")}
+                  placeholder="Nhập nội dung chuyển khoản"
+                />
+              </div>
             </div>
-
-            <div className={styles.field}>
-              <label className={styles.label}>OTP</label>
-              <input
-                className={styles.input}
-                type="password"
-                value={form.otp}
-                onChange={handleChange("otp")}
-                placeholder="Nhập OTP"
-              />
+          ) : (
+            <div className={styles.grid}>
+              <div className={styles.field}>
+                <label className={styles.label}>OTP Xác thực</label>
+                <input
+                  className={styles.input}
+                  type="password"
+                  value={form.otp}
+                  onChange={handleChange("otp")}
+                  placeholder="Nhập OTP để xác nhận"
+                  autoFocus
+                />
+              </div>
             </div>
-          </div>
+          )}
 
           {errorMessage && <div className={styles.error}>{errorMessage}</div>}
 
@@ -176,17 +191,37 @@ const TransferScreen = () => {
           )}
 
           <div className={styles.actionRow}>
-            <button
-              type="submit"
-              className={styles.primaryButton}
-              disabled={loading}
-            >
-              {loading ? "Đang xử lý..." : "Xác nhận chuyển tiền"}
-            </button>
-
-            <Link to="/customer/accounts?view=overview" className={styles.secondaryButton}>
-              Hủy
-            </Link>
+            {step === 1 ? (
+              <>
+                <button type="submit" className={styles.primaryButton}>
+                  Tiếp tục
+                </button>
+                <Link to="/customer/accounts?view=overview" className={styles.secondaryButton}>
+                  Hủy
+                </Link>
+              </>
+            ) : (
+              <>
+                <button
+                  type="submit"
+                  className={styles.primaryButton}
+                  disabled={loading}
+                >
+                  {loading ? "Đang xử lý..." : "Xác nhận chuyển tiền"}
+                </button>
+                <button
+                  type="button"
+                  className={styles.secondaryButton}
+                  onClick={() => {
+                    setStep(1);
+                    setErrorMessage("");
+                  }}
+                  disabled={loading}
+                >
+                  Quay lại
+                </button>
+              </>
+            )}
           </div>
         </form>
       </div>

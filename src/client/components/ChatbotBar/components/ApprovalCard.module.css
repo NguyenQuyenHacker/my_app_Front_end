@@ -1,0 +1,251 @@
+.card {
+  width: calc(100% - 32px);
+  max-width: 360px;
+  margin: 12px 16px;
+  border: 1px solid #d7e3f7;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5edf8;
+  background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+}
+
+.headerIcon {
+  width: 18px;
+  height: 18px;
+  color: #0f766e;
+  flex-shrink: 0;
+}
+
+.headerTitle {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.headerBadge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #f59e0b;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.infoBox {
+  border-radius: 14px;
+  background: #172946;
+  padding: 12px;
+  color: #eaf2ff;
+}
+
+.actionName {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 700;
+  background: transparent;
+}
+
+.actionDesc {
+  margin: 0 0 10px;
+  color: #cbd5e1;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.argsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.argItem {
+  min-width: 0;
+}
+
+.argLabel {
+  margin-bottom: 2px;
+  color: #93a4bc;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.argValue {
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.argValuePre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1.45;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inputLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.inputField {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+  color: #0f172a;
+  background: #ffffff;
+  font-size: 14px;
+}
+
+.inputField:focus {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.16);
+}
+
+.textareaField {
+  resize: vertical;
+  min-height: 92px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+.otpGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-radius: 14px;
+  padding: 12px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+}
+
+.otpLabel {
+  font-size: 12px;
+  font-weight: 800;
+  color: #9a3412;
+}
+
+.otpInput {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #fdba74;
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+  color: #0f172a;
+  background: #ffffff;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+}
+
+.otpInput:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  transition: transform 0.12s ease, opacity 0.12s ease, background 0.12s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.btnIcon {
+  width: 15px;
+  height: 15px;
+}
+
+.btnApprove {
+  background: #059669;
+  color: #ffffff;
+}
+
+.btnEdit {
+  background: #ffffff;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+.btnReject {
+  background: #ffffff;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.btnRejectStrong {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+@media (max-width: 420px) {
+  .card {
+    width: calc(100% - 20px);
+    margin: 10px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

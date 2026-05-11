@@ -697,3 +697,56 @@
     transform: translateY(0) scale(1);
   }
 }
+
+/* Interrupt Card */
+.interruptCard {
+  background: #ffffff;
+  border: 1px solid #f0b7c2;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: 0 8px 24px rgba(225, 29, 72, 0.06);
+}
+
+.interruptHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.interruptIcon {
+  font-size: 20px;
+}
+
+.interruptTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #11284b;
+}
+
+.interruptBody {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.otpGroup {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.otpGroup label {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 13px;
+}
+
+.interruptActions {
+  display: flex;
+  gap: 12px;
+}
