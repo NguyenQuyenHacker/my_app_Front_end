@@ -5,9 +5,9 @@ html, body { height: 100%; }
 
 body {
   margin: 0;
-  font-family: var(--font);
-  color: var(--text);
-  background: var(--bg);
+  font-family: var(--font-main);
+  color: var(--text-main);
+  background: var(--page-bg);
 }
 
 a { color: inherit; text-decoration: none; }

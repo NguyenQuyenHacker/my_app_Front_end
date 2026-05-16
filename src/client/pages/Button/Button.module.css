@@ -4,14 +4,16 @@
   border: 1px solid transparent;
   font-weight: 900;
   letter-spacing: .2px;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .primary {
-  background: linear-gradient(135deg, var(--tcb-red) 0%, var(--tcb-dark-red) 100%);
+  background: linear-gradient(135deg, var(--tcb-red) 0%, var(--tcb-red-dark) 100%);
   color: #fff;
   box-shadow: 0 12px 24px rgba(227,6,19,.18);
 }

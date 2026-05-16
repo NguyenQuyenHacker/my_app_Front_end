@@ -64,11 +64,11 @@
   border-radius: 16px;
   border: 1px solid rgba(17,24,39,.10);
   background: rgba(255,255,255,.82);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-sm);
 }
 
 .metaTitle { font-weight: 900; font-size: 13px; }
-.metaDesc { margin-top: 6px; font-size: 12px; color: var(--muted); }
+.metaDesc { margin-top: 6px; font-size: 12px; color: var(--text-muted); }
 
 /* Footer Note */
 .footBox {
@@ -77,7 +77,7 @@
   border-radius: 16px;
   border: 1px solid rgba(17,24,39,.10);
   background: rgba(255,255,255,.85);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-sm);
 }
 .footList {
   margin: 8px 0 0;
@@ -92,20 +92,20 @@
   display: grid;
   place-items: center;
   padding: 36px;
-  background: var(--panel-bg);
+  background: var(--page-bg);
 }
 
 .card {
   width: min(420px, 100%);
   border-radius: 18px;
   border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-md);
   padding: 22px;
   background: #fff;
 }
 
 .cardHead h2 { margin: 0; font-size: 18px; font-weight: 900; }
-.cardHead p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+.cardHead p { margin: 6px 0 0; color: var(--text-muted); font-size: 13px; }
 
 .errorAlert {
   position: fixed;
@@ -155,14 +155,14 @@
   margin-top: 2px;
 }
 
-.link { color: var(--tcb-dark-red); font-weight: 800; font-size: 13px;}
+.link { color: var(--tcb-red-dark); font-weight: 800; font-size: 13px;}
 .link:hover { text-decoration: underline; }
 
 .divider { height: 1px; background: var(--border); margin: 6px 0; }
 
 .fineprint {
   margin: 0;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 12px;
   text-align: center;
 }

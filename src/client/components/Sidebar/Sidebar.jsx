@@ -36,18 +36,6 @@ const Sidebar = ({ collapsed = false }) => {
 
           <li className={styles.navItem}>
              <NavLink
-              to="/customer/transfer"
-              className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ""}`}
-            >
-              <div className={styles.navLinkContent}>
-                <ArrowRightLeft size={20} />
-                <span className={styles.linkText}>Chuyển khoản</span>
-              </div>
-            </NavLink>
-          </li>
-
-          <li className={styles.navItem}>
-             <NavLink
               to="/customer/accounts"
               className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ""}`}
             >
@@ -58,24 +46,40 @@ const Sidebar = ({ collapsed = false }) => {
             </NavLink>
           </li>
 
+          <li className={styles.navItem}>
+             <NavLink
+              to="/customer/transfer"
+              className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ""}`}
+            >
+              <div className={styles.navLinkContent}>
+                <ArrowRightLeft size={20} />
+                <span className={styles.linkText}>Chuyển khoản</span>
+              </div>
+            </NavLink>
+          </li>
+
         </ul>
       </nav>
 
       <div className={styles.bottomSection}>
-        <NavLink
-            to="/customer/settings"
-            className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ""}`}
-          >
-          <div className={styles.navLinkContent}>
-            <Settings size={20} />
-            <span className={styles.linkText}>Cài đặt</span>
-          </div>
-        </NavLink>
-        
-        <button className={styles.logoutButton} onClick={handleLogout}>
-          <LogOut size={20} />
-          <span className={styles.linkText}>Đăng xuất</span>
-        </button>
+        <div className={styles.bottomNavItem}>
+          <NavLink
+              to="/customer/settings"
+              className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ""}`}
+            >
+            <div className={styles.navLinkContent}>
+              <Settings size={20} />
+              <span className={styles.linkText}>Cài đặt</span>
+            </div>
+          </NavLink>
+        </div>
+
+        <div className={styles.bottomNavItem}>
+          <button className={styles.logoutButton} onClick={handleLogout}>
+            <LogOut size={20} />
+            <span className={styles.linkText}>Đăng xuất</span>
+          </button>
+        </div>
       </div>
     </aside>
   );

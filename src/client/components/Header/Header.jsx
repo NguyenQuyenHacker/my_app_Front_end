@@ -57,7 +57,7 @@ export default function Header({ onToggleChatbot, isChatbotOpen, onToggleSidebar
           aria-label="Toggle sidebar"
           title={sidebarCollapsed ? "Mở sidebar" : "Thu gọn sidebar"}
         >
-          <Menu size={24} color="#ffffff" />
+          <Menu size={22} color="#4b5563" />
         </button>
       </div>
 

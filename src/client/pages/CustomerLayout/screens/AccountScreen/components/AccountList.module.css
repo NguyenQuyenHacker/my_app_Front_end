@@ -1,9 +1,10 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 20px;
 }
 
+/* Header row */
 .header {
   display: flex;
   align-items: center;
@@ -13,44 +14,57 @@
 
 .title {
   margin: 0;
-  font-size: 18px;
-  color: #111111;
-  font-weight: 800;
-}
-
-.badge {
-  background: #fff1f2;
-  color: #d71920;
-  border: 1px solid #ffd5d8;
-  border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 12px;
+  font-size: 15px;
+  color: #111827;
   font-weight: 700;
 }
 
+.badge {
+  background: #fef2f2;
+  color: #e32227;
+  border: 1px solid rgba(227, 34, 39, 0.15);
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* Info grid */
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(140px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
 }
 
 .item {
-  background: #fafafa;
-  border: 1px solid #ededed;
-  border-radius: 14px;
-  padding: 14px;
+  background: #f9fafb;
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .label {
-  display: block;
-  font-size: 13px;
-  color: #6b7280;
-  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.item strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  letter-spacing: 0.1px;
 }
 
 @media (max-width: 992px) {
   .grid {
-    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 

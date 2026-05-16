@@ -1,70 +1,110 @@
 .cardShell {
   min-height: 220px;
-  border-radius: 20px;
-  padding: 22px;
-  background: linear-gradient(135deg, #1c1c1e, #3a3a3c);
+  border-radius: 14px;
+  padding: 24px 26px;
+  background: linear-gradient(145deg, #1a1a1a 0%, #2d2d2d 60%, #1a1a1a 100%);
   color: #ffffff;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 14px 28px rgba(17, 17, 17, 0.18);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  position: relative;
+  overflow: hidden;
 }
 
-.top,
-.bottom {
+/* Subtle shimmer overlay */
+.cardShell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  pointer-events: none;
+}
+
+/* Top row */
+.top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+  align-items: flex-start;
 }
 
 .brand {
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: #ffffff;
 }
 
 .cardType {
   margin-top: 4px;
-  font-size: 12px;
-  color: #d1d5db;
-  letter-spacing: 1px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  font-weight: 500;
 }
 
+/* Mastercard-style logo mark */
 .logoMark {
   display: flex;
   align-items: center;
 }
 
 .logoMark span {
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: inline-block;
+  opacity: 0.9;
 }
 
 .logoMark span:first-child {
-  background: rgba(255, 255, 255, 0.8);
+  background: #eb001b;
 }
 
 .logoMark span:last-child {
-  background: rgba(215, 25, 32, 0.9);
-  margin-left: -8px;
+  background: #f79e1b;
+  margin-left: -12px;
+  mix-blend-mode: screen;
 }
 
+/* Card number */
 .number {
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  margin: 18px 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  font-family: "Courier New", Courier, monospace;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
+/* Bottom row */
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
 }
 
 .label {
   display: block;
-  font-size: 12px;
-  color: #d1d5db;
-  margin-bottom: 6px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: 500;
 }
 
 .value {
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
 }

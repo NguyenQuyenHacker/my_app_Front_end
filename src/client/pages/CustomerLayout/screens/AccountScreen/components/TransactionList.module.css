@@ -9,16 +9,22 @@
   justify-content: space-between;
   gap: 12px;
   align-items: center;
-  padding: 14px 16px;
-  border: 1px solid #ececec;
-  border-radius: 14px;
-  background: #ffffff;
+  padding: 16px 20px;
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  background: var(--page-bg);
+  transition: background 0.2s ease;
+}
+
+.item:hover {
+  background: var(--card-bg);
+  border-color: var(--border);
 }
 
 .left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
 .dot {
@@ -29,42 +35,45 @@
 }
 
 .incomeDot {
-  background: #16a34a;
+  background: var(--success);
 }
 
 .expenseDot {
-  background: #d71920;
+  background: var(--tcb-red); /* Using tcb-red for expenses for consistency */
 }
 
 .note {
   margin: 0;
   font-weight: 700;
-  color: #111111;
+  color: var(--black);
+  font-size: 15px;
 }
 
 .time {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--text-muted);
+  margin-top: 4px;
 }
 
 .amount {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
 }
 
 .income {
-  color: #16a34a;
-   
+  color: var(--success);
 }
 
 .expense {
-  color: #d71920;
+  color: var(--tcb-red);
 }
 
 .empty {
-  padding: 18px;
-  border-radius: 12px;
-  background: #fafafa;
-  border: 1px solid #ececec;
-  color: #6b7280;
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--page-bg);
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 14px;
 }

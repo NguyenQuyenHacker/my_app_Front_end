@@ -1,0 +1,142 @@
+.footer {
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  padding: 80px 0 40px;
+  color: #4b5563;
+  flex-shrink: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.topSection {
+  display: flex;
+  justify-content: space-between;
+  gap: 48px;
+  margin-bottom: 64px;
+}
+
+.brandColumn {
+  flex: 0 0 280px;
+}
+
+.logo {
+  margin-bottom: 24px;
+}
+
+.logoImg {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
+.brandDesc {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.linksGrid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.columnTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.linkList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.linkList li a {
+  color: #4b5563;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.linkList li a:hover {
+  color: var(--tcb-red);
+}
+
+.contactItem {
+  color: #4b5563;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.bottomSection {
+  padding-top: 32px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.copyright {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.legalLinks {
+  display: flex;
+  gap: 32px;
+}
+
+.legalLinks a {
+  font-size: 13px;
+  color: #9ca3af;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.legalLinks a:hover {
+  color: #111827;
+}
+
+@media (max-width: 1024px) {
+  .topSection {
+    flex-direction: column;
+    gap: 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 60px 0 30px;
+  }
+  
+  .container {
+    padding: 0 24px;
+  }
+  
+  .linksGrid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  .bottomSection {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+}
+

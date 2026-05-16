@@ -1,33 +1,35 @@
 .sidebar {
-  width: 250px;
-  min-width: 250px;
-  background: #1e1e1e; /* Dark theme sidebar */
-  border-right: none;
+  width: 240px;
+  min-width: 240px;
+  background: #ffffff;
+  border-right: 2px solid #d1d5db;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: width 0.22s ease, min-width 0.22s ease;
-  /* height: calc(100vh - 64px); */
-  overflow-y: auto;
-  color: #e5e5e5;
+  transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    min-width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  color: #1a1a2e;
+  flex-shrink: 0;
 }
 
 .collapsed {
-  width: 72px;
-  min-width: 72px;
+  width: 68px;
+  min-width: 68px;
 }
 
 .sidebar::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background: #3f3f46;
+  background: #e5e7eb;
   border-radius: 4px;
 }
 
+/* Navigation */
 .navigation {
-  padding: 12px 0;
+  padding: 8px 0;
   flex: 1;
 }
 
@@ -37,103 +39,133 @@
   padding: 0;
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .navItem {
   margin: 0;
-  padding: 0;
+  padding: 0 10px;
 }
 
 .navLink {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  height: 48px;
-  padding: 0 24px;
+  height: 46px;
+  padding: 0 14px;
   text-decoration: none;
-  color: #d1d5db;
-  font-size: 15px;
+  color: #4b5563;
+  font-size: 14px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  border-radius: 8px;
+  transition: background 0.15s ease, color 0.15s ease;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .navLinkContent {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .navLink:hover {
-  background: #27272a;
-  color: #ffffff;
+  background: #f3f4f6;
+  color: #111827;
 }
 
 .active {
-  background: #27272a;
-  color: #ffffff;
+  background: #fef2f2;
+  color: #e32227;
+  font-weight: 600;
 }
 
-.active::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: #ef4444; /* Red accent */
+.active .navLinkContent svg {
+  color: #e32227;
+}
+
+/* Bottom Section */
+.bottomSection {
+  padding: 8px 0 12px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bottomNavItem {
+  padding: 0 10px;
+}
+
+.logoutButton {
+  width: 100%;
+  height: 46px;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  color: #e32227;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  border-radius: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.logoutButton:hover {
+  background: #fef2f2;
 }
 
 .linkText {
   white-space: nowrap;
-  transition: opacity 0.16s ease, width 0.16s ease;
+  transition: opacity 0.16s ease;
+  overflow: hidden;
+}
+
+/* Collapsed state */
+.collapsed .navItem {
+  padding: 0 8px;
 }
 
 .collapsed .navLink {
   justify-content: center;
   padding: 0;
+  width: 52px;
+  margin: 0 auto;
 }
 
-.collapsed .logoutButton {
-  justify-content: center;
-  padding: 0;
+.collapsed .navLinkContent {
+  gap: 0;
 }
 
 .collapsed .linkText {
   opacity: 0;
   width: 0;
-  overflow: hidden;
-  margin-left: 0;
+  pointer-events: none;
 }
 
-/* Bottom Section */
-.bottomSection {
-  padding: 12px 0 14px;
-  border-top: 1px solid #3f3f46;
+.collapsed .bottomNavItem {
+  padding: 0 8px;
 }
 
-.logoutButton {
-  width: 100%;
-  height: 48px;
-  border: none;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 0 24px;
-  color: #fbbf24;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  overflow: hidden;
+.collapsed .logoutButton {
+  justify-content: center;
+  padding: 0;
+  width: 52px;
+  margin: 0 auto;
+  gap: 0;
 }
 
-.logoutButton:hover {
-  background: #27272a;
-  color: #f59e0b;
+.collapsed .logoutButton .linkText {
+  opacity: 0;
+  width: 0;
+  pointer-events: none;
 }
 
 .collapsed .navLinkContent svg,

@@ -6,9 +6,11 @@ import Header from "../../components/Header/Header";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import ChatbotBar from "../../components/ChatbotBar/ChatbotBar";
 import Splitter from "../../components/Splitter/Splitter";
+import Footer from "../../components/Footer/Footer";
 
 export default function CustomerLayout() {
   const MIN_WIDTH = 320;
+
   const MAX_WIDTH = 520;
 
   const [chatbotWidth, setChatbotWidth] = useState(360);
@@ -76,7 +78,9 @@ export default function CustomerLayout() {
           
           <main className={styles.screensBar}>
             <Outlet />
+            <Footer />
           </main>
+
         </div>
       </div>
 
