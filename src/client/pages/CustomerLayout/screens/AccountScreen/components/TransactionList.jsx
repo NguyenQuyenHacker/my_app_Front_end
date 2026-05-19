@@ -1,17 +1,21 @@
 import React from "react";
 import styles from "./TransactionList.module.css";
+import { useLanguage } from "../../../../../i18n/LanguageContext";
 
-const formatMoney = (value, currency) =>
-  new Intl.NumberFormat("vi-VN", {
+const formatMoney = (value, currency, locale) =>
+  new Intl.NumberFormat(locale === "en" ? "en-US" : "vi-VN", {
     style: "currency",
     currency,
   }).format(Number(value || 0));
 
-const formatDateTime = (value) => new Date(value).toLocaleString("vi-VN");
+const formatDateTime = (value, locale) =>
+  new Date(value).toLocaleString(locale === "en" ? "en-US" : "vi-VN");
 
 const TransactionList = ({ entries = [], currency = "VND" }) => {
+  const { language, t } = useLanguage();
+
   if (!entries.length) {
-    return <div className={styles.empty}>Chưa có giao dịch nào.</div>;
+    return <div className={styles.empty}>{t("account.txEmpty")}</div>;
   }
 
   return (
@@ -29,8 +33,8 @@ const TransactionList = ({ entries = [], currency = "VND" }) => {
                 }`}
               />
               <div>
-                <p className={styles.note}>{e.note || "Giao dịch"}</p>
-                <span className={styles.time}>{formatDateTime(e.created_at)}</span>
+                <p className={styles.note}>{e.note || t("account.txDefault")}</p>
+                <span className={styles.time}>{formatDateTime(e.created_at, language)}</span>
               </div>
             </div>
 
@@ -41,7 +45,7 @@ const TransactionList = ({ entries = [], currency = "VND" }) => {
                 }`}
               >
                 {isIncome ? "+" : ""}
-                {formatMoney(amountNum, currency)}
+                {formatMoney(amountNum, currency, language)}
               </span>
             </div>
           </div>

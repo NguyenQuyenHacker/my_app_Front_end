@@ -1,10 +1,16 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./client/pages/Login/Login";
+import Signup from "./client/pages/Signup/Signup";
 import CustomerLayout from "./client/pages/CustomerLayout/CustomerLayout";
-import CustomerOverview from "./client/pages/CustomerLayout/screens/CustomerOverview/CustomerOverview";
+import CustomerInfor from "./client/pages/CustomerLayout/screens/CustomerInfor/CustomerInfor";
+import CustomerHomePage from "./client/pages/CustomerLayout/screens/CustomerHomePage/CustomerHomePage";
 import AccountScreen from "./client/pages/CustomerLayout/screens/AccountScreen/AccountScreen";
 import TransferScreen from "./client/pages/CustomerLayout/screens/TransferScreen/TransferScreen";
+import SettingsLayout from "./client/pages/CustomerLayout/screens/Settings/SettingsLayout";
+import SettingsProfile from "./client/pages/CustomerLayout/screens/Settings/tabs/SettingsProfile";
+import SettingsSecurity from "./client/pages/CustomerLayout/screens/Settings/tabs/SettingsSecurity";
+import SettingsDisplay from "./client/pages/CustomerLayout/screens/Settings/tabs/SettingsDisplay";
 
 import AdminLayout from "./admin/pages/AdminLayout/AdminLayout";
 import AdminOverview from "./admin/pages/AdminOverview/AdminOverview";
@@ -27,23 +33,33 @@ import ClientProtectedRoute from "./client/router/ClientProtectedRoute";
 import ClientPublicRoute from "./client/router/ClientPublicRoute";
 
 import { AdminProvider } from "./admin/context/AdminContext";
+import { LanguageProvider } from "./client/i18n/LanguageContext";
 
 function App() {
   return (
     <BrowserRouter>
+      <LanguageProvider>
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
 
         <Route element={<ClientPublicRoute />}>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Route>
 
         <Route element={<ClientProtectedRoute />}>
           <Route path="/customer" element={<CustomerLayout />}>
-            <Route index element={<Navigate to="overview" replace />} />
-            <Route path="overview" element={<CustomerOverview />} />
+            <Route index element={<Navigate to="home-page" replace />} />
+            <Route path="home-page" element={<CustomerHomePage />} />
+            <Route path="infor" element={<CustomerInfor />} />
             <Route path="accounts" element={<AccountScreen />} />
             <Route path="transfer" element={<TransferScreen />} />
+            <Route path="settings" element={<SettingsLayout />}>
+              <Route index element={<Navigate to="profile" replace />} />
+              <Route path="profile" element={<SettingsProfile />} />
+              <Route path="security" element={<SettingsSecurity />} />
+              <Route path="display" element={<SettingsDisplay />} />
+            </Route>
           </Route>
         </Route>
 
@@ -74,6 +90,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }

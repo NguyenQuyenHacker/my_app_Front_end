@@ -1,14 +1,17 @@
+import { useNavigate } from 'react-router-dom';
 import styles from '../Login.module.css';
-import Input from '../../Input/Input';
-import Button from '../../Button/Button';
+import { useT } from '../../../i18n/LanguageContext';
 
-const LoginForm = ({ formData, handleChange, handleSubmit, error }) => {
+const LoginForm = ({ formData, handleChange, handleSubmit, loading, error }) => {
+  const t = useT();
+  const navigate = useNavigate();
+
   return (
     <section className={styles.panel}>
       <div className={styles.card}>
         <header className={styles.cardHead}>
-          <h2>Đăng nhập khách hàng</h2>
-          <p>Nhập thông tin để bắt đầu phiên tại quầy.</p>
+          <h2>{t('login.formTitle')}</h2>
+          <p>{t('login.formSub')}</p>
         </header>
 
         {error && (
@@ -23,43 +26,65 @@ const LoginForm = ({ formData, handleChange, handleSubmit, error }) => {
         )}
 
         <form className={styles.form} onSubmit={handleSubmit}>
-          <Input
-            id="phone"
-            name="phone"
-            label="Số điện thoại"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-          />
-
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            label="Mật khẩu"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-
-          <div className={styles.row}>
-            <label style={{ fontSize: '13px', display: 'flex', gap: '8px' }}>
-              <input type="checkbox" style={{ accentColor: 'var(--tcb-red)' }} />
-              Ghi nhớ thiết bị
+          <div className={styles.field}>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              className={styles.input}
+              placeholder=" "
+              value={formData.phone}
+              onChange={handleChange}
+              required
+            />
+            <label htmlFor="phone" className={styles.label}>
+              {t('login.phone')}
             </label>
-
-            <a href="#" className={styles.link}>Quên mật khẩu?</a>
           </div>
 
-          <Button type="submit" variant="primary">Đăng nhập</Button>
+          <div className={styles.field}>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              className={styles.input}
+              placeholder=" "
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <label htmlFor="password" className={styles.label}>
+              {t('login.password')}
+            </label>
+          </div>
+
+          <div className={styles.row}>
+            <label className={styles.remember}>
+              <input type="checkbox" className={styles.checkbox} />
+              {t('login.rememberDevice')}
+            </label>
+
+            <a href="#" className={styles.link}>{t('login.forgotPassword')}</a>
+          </div>
+
+          <button type="submit" className={styles.btnPrimary} disabled={loading}>
+            {loading && <span className={styles.spinner} aria-hidden="true" />}
+            {loading ? t('login.loggingIn') || 'Đang đăng nhập...' : t('login.loginBtn')}
+          </button>
 
           <div className={styles.divider}></div>
 
-          <Button type="button" variant="secondary">Tạo tài khoản</Button>
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={() => navigate('/signup')}
+          >
+            {t('login.createAccount')}
+          </button>
 
           <p className={styles.fineprint}>
-            Tiếp tục nghĩa là bạn đồng ý với{' '}
-            <a href="#" className={styles.link}>Điều khoản</a>.
+            {t('login.fineprint')}{' '}
+            <a href="#" className={styles.link}>{t('login.fineprintLink')}</a>.
           </p>
         </form>
       </div>

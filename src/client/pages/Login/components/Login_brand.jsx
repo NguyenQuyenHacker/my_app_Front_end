@@ -1,12 +1,15 @@
 import styles from '../Login.module.css';
+import { useT } from '../../../i18n/LanguageContext';
 
 const Login_brand = () => {
+  const t = useT();
+
   return (
     <section className={styles.brand}>
       <div className={styles.brandOverlay}></div>
 
       <div className={styles.brandInner}>
-        <header>
+        <header className={styles.logoRow}>
           <img
             src="https://techcombank.com/content/dam/techcombank/public-site/seo/techcombank_logo_svg_86201e50d1.svg"
             alt="Techcombank Logo"
@@ -15,37 +18,34 @@ const Login_brand = () => {
         </header>
 
         <div className={styles.brandContent}>
-          <h1 className={styles.brandTitle}>Phiên giao dịch tại quầy</h1>
+          <h1 className={styles.brandTitle}>{t('login.brandTitle')}</h1>
 
-          <p className={styles.brandSub}>
-            Dành cho khách hàng thực hiện giao dịch cùng nhân viên ngân hàng.
-            Thông tin hiển thị phù hợp môi trường quầy.
-          </p>
+          <p className={styles.brandSub}>{t('login.brandSub')}</p>
 
           <div className={styles.metaCards}>
             <div className={styles.metaCard}>
-              <div className={styles.metaTitle}>Chuyển khoản</div>
-              <div className={styles.metaDesc}>Nội bộ / liên ngân hàng</div>
+              <div className={styles.metaTitle}>{t('login.cardTransfer')}</div>
+              <div className={styles.metaDesc}>{t('login.cardTransferDesc')}</div>
             </div>
 
             <div className={styles.metaCard}>
-              <div className={styles.metaTitle}>Thanh toán</div>
-              <div className={styles.metaDesc}>Hoá đơn, QR, nạp tiền</div>
+              <div className={styles.metaTitle}>{t('login.cardPayment')}</div>
+              <div className={styles.metaDesc}>{t('login.cardPaymentDesc')}</div>
             </div>
 
             <div className={styles.metaCard}>
-              <div className={styles.metaTitle}>Thẻ</div>
-              <div className={styles.metaDesc}>Khoá/mở, hạn mức, PIN</div>
+              <div className={styles.metaTitle}>{t('login.cardCard')}</div>
+              <div className={styles.metaDesc}>{t('login.cardCardDesc')}</div>
             </div>
           </div>
         </div>
 
         <footer className={styles.footBox}>
-          <div className={styles.metaTitle}>Lưu ý</div>
+          <div className={styles.metaTitle}>{t('login.noteTitle')}</div>
 
           <ul className={styles.footList}>
-            <li>Không chia sẻ OTP/mật khẩu cho bất kỳ ai.</li>
-            <li>Phiên có thể tự kết thúc nếu không thao tác.</li>
+            <li>{t('login.note1')}</li>
+            <li>{t('login.note2')}</li>
           </ul>
         </footer>
       </div>

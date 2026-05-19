@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./CustomerOverview.module.css"; 
-import { getCurrentUser } from "../../../../api/userApi";
-import CustomerInfo from "./components/CustomerInfo";
+import styles from "./CustomerHomePage.module.css";
+import { getCustomerHomePage } from "../../../../api/userApi";
 import CustomerService from "./components/CustomerService";
 import { clearClientToken } from "../../../../../utils/authUtils";
+import { useT } from "../../../../i18n/LanguageContext";
 
-export default function CustomerOverview() {
+export default function CustomerHomePage() {
   const navigate = useNavigate();
-  const [customer, setCustomer] = useState(null);
+  const t = useT();
+  const [home, setHome] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -17,17 +18,15 @@ export default function CustomerOverview() {
       try {
         setLoading(true);
         setError("");
-
-        const result = await getCurrentUser();
-
-        setCustomer(result);
+        const result = await getCustomerHomePage();
+        setHome(result);
       } catch (err) {
         if (err.response?.status === 401) {
           clearClientToken();
           navigate("/login");
         } else {
           console.error(err);
-          setError("Server error");
+          setError(t("common.serverError"));
         }
       } finally {
         setLoading(false);
@@ -38,7 +37,7 @@ export default function CustomerOverview() {
   }, [navigate]);
 
   if (loading) {
-    return <div className={styles.wrapper}>Đang tải dữ liệu khách hàng...</div>;
+    return <div className={styles.wrapper}>{t("home.loading")}</div>;
   }
 
   if (error) {
@@ -47,8 +46,13 @@ export default function CustomerOverview() {
 
   return (
     <div className={styles.wrapper}>
-      <CustomerInfo customer={customer} />
-      <CustomerService />
+      {home?.greeting_name && (
+        <div className={styles.greetingBlock}>
+          <span className={styles.greetingLabel}>{t("home.greeting")}</span>
+          <h1 className={styles.greetingName}>{home.greeting_name}</h1>
+        </div>
+      )}
+      <CustomerService home={home} />
     </div>
   );
 }

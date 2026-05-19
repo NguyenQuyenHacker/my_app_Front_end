@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { getAccountOverview } from "../../../../api/accountApi";
 import styles from "./AccountScreen.module.css";
 import { clearClientToken } from "../../../../../utils/authUtils";
+import { useT } from "../../../../i18n/LanguageContext";
 
 import AccountSummary from "./components/AccountSummary";
 import AccountCard from "./components/AccountCard";
@@ -11,6 +12,7 @@ import TransactionList from "./components/TransactionList";
 
 const AccountScreen = () => {
   const navigate = useNavigate();
+  const t = useT();
   const [searchParams] = useSearchParams();
 
   const [data, setData] = useState(null);
@@ -35,14 +37,14 @@ const AccountScreen = () => {
         }
 
         console.error(error);
-        setErrorMessage("Không thể tải dữ liệu tài khoản.");
+        setErrorMessage(t("account.loadError"));
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [navigate]);
+  }, [navigate, t]);
 
   const customer = data?.customer || null;
   const account = data?.account || null;
@@ -52,7 +54,7 @@ const AccountScreen = () => {
   const recentEntries = useMemo(() => entries.slice(0,), [entries]);
 
   if (loading) {
-    return <div className={styles.state}>Đang tải dữ liệu...</div>;
+    return <div className={styles.state}>{t("account.loading")}</div>;
   }
 
   if (errorMessage) {
@@ -60,7 +62,7 @@ const AccountScreen = () => {
   }
 
   if (!account) {
-    return <div className={styles.state}>Không có dữ liệu tài khoản.</div>;
+    return <div className={styles.state}>{t("account.empty")}</div>;
   }
 
   return (
@@ -69,10 +71,8 @@ const AccountScreen = () => {
         <>
           <div className={styles.pageHeader}>
             <div>
-              <h1 className={styles.pageTitle}>Tài khoản của bạn</h1>
-              <p className={styles.pageSubtitle}>
-                Quản lý thông tin tài khoản, thẻ và số dư
-              </p>
+              <h1 className={styles.pageTitle}>{t("account.pageTitle")}</h1>
+              <p className={styles.pageSubtitle}>{t("account.pageSubtitle")}</p>
             </div>
           </div>
 
@@ -89,7 +89,7 @@ const AccountScreen = () => {
                 bankName={account.bank_name}
               />
             ) : (
-              <div className={styles.noCard}>Chưa có dữ liệu thẻ.</div>
+              <div className={styles.noCard}>{t("account.noCard")}</div>
             )}
           </div>
 
@@ -99,14 +99,14 @@ const AccountScreen = () => {
                 to="/customer/accounts?view=transactions"
                 className={styles.primaryButton}
               >
-                Xem lịch sử giao dịch
+                {t("account.viewTransactions")}
               </Link>
 
-              <Link 
-                to="/customer/transfer" 
+              <Link
+                to="/customer/transfer"
                 className={styles.secondaryButton}
               >
-                Chuyển tiền
+                {t("account.transfer")}
               </Link>
 
               <button
@@ -114,7 +114,7 @@ const AccountScreen = () => {
                 className={styles.secondaryButton}
                 onClick={() => window.location.reload()}
               >
-                Tải lại
+                {t("account.reload")}
               </button>
             </div>
           </div>
@@ -129,9 +129,9 @@ const AccountScreen = () => {
         <div className={styles.section}>
           <div className={styles.viewHeader}>
             <div>
-              <h2 className={styles.viewTitle}>Lịch sử giao dịch</h2>
+              <h2 className={styles.viewTitle}>{t("account.txHistoryTitle")}</h2>
               <p className={styles.viewSubtitle}>
-                Tài khoản {account.account_no}
+                {t("account.accountLabel")} {account.account_no}
               </p>
             </div>
 
@@ -139,7 +139,7 @@ const AccountScreen = () => {
               to="/customer/accounts?view=overview"
               className={styles.backButton}
             >
-              Quay lại tài khoản
+              {t("account.backToAccount")}
             </Link>
           </div>
 

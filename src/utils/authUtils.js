@@ -62,5 +62,11 @@ export const clearAdminAuth = () => {
 
 // Client helpers
 export const getClientToken = () => localStorage.getItem(CLIENT_TOKEN_KEY);
-export const setClientToken = (token) => localStorage.setItem(CLIENT_TOKEN_KEY, token);
-export const clearClientToken = () => localStorage.removeItem(CLIENT_TOKEN_KEY);
+export const setClientToken = (token) => {
+    localStorage.setItem(CLIENT_TOKEN_KEY, token);
+    window.dispatchEvent(new Event("client-auth-changed"));
+};
+export const clearClientToken = () => {
+    localStorage.removeItem(CLIENT_TOKEN_KEY);
+    window.dispatchEvent(new Event("client-auth-changed"));
+};

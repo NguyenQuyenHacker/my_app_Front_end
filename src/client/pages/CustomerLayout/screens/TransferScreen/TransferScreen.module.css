@@ -147,6 +147,106 @@
   color: #166534;
 }
 
+/* ── Tabs (internal / external) ─────────────────────────────── */
+.tabs {
+  display: inline-flex;
+  background: var(--input-bg);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  align-self: flex-start;
+}
+
+.tab {
+  border: none;
+  background: transparent;
+  padding: 10px 20px;
+  border-radius: 9px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tab:hover:not(.tabActive) {
+  color: var(--text-main);
+}
+
+.tabActive {
+  background: #ffffff;
+  color: var(--tcb-red);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Confirm summary ────────────────────────────────────────── */
+.summary {
+  background: #FAFBFC;
+  border: 1.5px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summaryTitle {
+  margin: 0 0 4px;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-main);
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  gap: 16px;
+}
+
+.summaryLabel {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.summaryValue {
+  color: var(--text-main);
+  font-weight: 600;
+  text-align: right;
+}
+
+.summaryAmount {
+  color: var(--tcb-red);
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.expiryHint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ── Status banners ─────────────────────────────────────────── */
+.processing {
+  border-radius: 12px;
+  background: #FFFBEB;
+  border: 1.5px solid #FDE68A;
+  color: #92400E;
+  padding: 16px 20px;
+  font-size: 14px;
+}
+
+.failed {
+  border-radius: 12px;
+  background: #FFF1F1;
+  border: 1.5px solid #FECACA;
+  color: #B91C1C;
+  padding: 16px 20px;
+  font-size: 14px;
+}
+
 /* ── Action row ─────────────────────────────────────────────── */
 .actionRow {
   display: flex;

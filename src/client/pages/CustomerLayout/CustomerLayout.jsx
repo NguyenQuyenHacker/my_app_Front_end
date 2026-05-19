@@ -67,15 +67,15 @@ export default function CustomerLayout() {
   return (
     <div className={styles.layout} ref={layoutRef}>
       <div className={styles.mainWrapper}>
-        <Header 
-          onToggleChatbot={toggleChatbot} 
+        <Header
+          onToggleChatbot={toggleChatbot}
           sidebarCollapsed={sidebarCollapsed}
           onToggleSidebar={toggleSidebar}
         />
 
         <div className={styles.body}>
           <Sidebar collapsed={sidebarCollapsed} />
-          
+
           <main className={styles.screensBar}>
             <Outlet />
             <Footer />

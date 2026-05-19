@@ -1,0 +1,230 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  color: var(--color-primary-text);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.sectionTitle {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-medium);
+  color: var(--color-heading);
+  line-height: var(--lh-tight);
+  margin: 0;
+}
+
+.sectionDesc {
+  font-size: var(--fs-sm);
+  color: var(--color-secondary-text);
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 480px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--color-primary-text);
+}
+
+.input {
+  padding: 11px var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: var(--fs-base);
+  font-family: var(--font-sans);
+  color: var(--color-primary-text);
+  background: #ffffff;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-link);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+}
+
+.strengthRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.strengthBar {
+  flex: 1;
+  height: 6px;
+  background: var(--color-border-subtle);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.strengthFill {
+  height: 100%;
+  background: var(--color-danger);
+  border-radius: var(--radius-pill);
+  transition: width var(--transition-fast), background var(--transition-fast);
+}
+
+.strengthFill[data-level="2"] {
+  background: var(--color-warning);
+}
+
+.strengthFill[data-level="3"] {
+  background: #84cc16;
+}
+
+.strengthFill[data-level="4"] {
+  background: var(--color-success);
+}
+
+.strengthText {
+  font-size: var(--fs-xs);
+  color: var(--color-secondary-text);
+  min-width: 80px;
+  text-align: right;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-1);
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 11px var(--space-6);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  border: none;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  transition: opacity var(--transition-fast);
+}
+
+.btnPrimary:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.btnPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.success {
+  background: var(--color-bg-success-subtle);
+  color: #0a3621;
+  border-radius: 12px;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+
+.error {
+  background: var(--color-bg-danger-subtle);
+  color: #58151c;
+  border-radius: 12px;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+
+.muted {
+  color: var(--color-secondary-text);
+  font-size: var(--fs-base);
+}
+
+.accountList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.accountCard {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: #ffffff;
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.accountCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.accountHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.accountNo {
+  font-weight: var(--fw-medium);
+  color: var(--color-heading);
+  font-size: var(--fs-md);
+}
+
+.accountBank {
+  font-size: var(--fs-xs);
+  color: var(--color-secondary-text);
+}
+
+.pinGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.lastLoginCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: #ffffff;
+  max-width: 480px;
+}
+
+.lastLoginLabel {
+  font-size: var(--fs-sm);
+  color: var(--color-secondary-text);
+}
+
+.lastLoginValue {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  color: var(--color-primary-text);
+}
+
+@media (max-width: 700px) {
+  .pinGrid {
+    grid-template-columns: 1fr;
+  }
+}

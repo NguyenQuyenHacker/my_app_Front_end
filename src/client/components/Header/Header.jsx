@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
 import styles from "./Header.module.css";
+import { useT } from "../../i18n/LanguageContext";
 
 export default function Header({ onToggleChatbot, isChatbotOpen, onToggleSidebar, sidebarCollapsed }) {
+  const t = useT();
   const [weather, setWeather] = useState({
     temp: "--",
     icon: "wb_sunny", // Icon mặc định
@@ -54,8 +56,8 @@ export default function Header({ onToggleChatbot, isChatbotOpen, onToggleSidebar
           type="button"
           className={styles.menuButton}
           onClick={onToggleSidebar}
-          aria-label="Toggle sidebar"
-          title={sidebarCollapsed ? "Mở sidebar" : "Thu gọn sidebar"}
+          aria-label={t("header.toggleSidebar")}
+          title={sidebarCollapsed ? t("header.openSidebar") : t("header.closeSidebar")}
         >
           <Menu size={22} color="#4b5563" />
         </button>
@@ -89,8 +91,8 @@ export default function Header({ onToggleChatbot, isChatbotOpen, onToggleSidebar
             className={styles.aiButton} 
             onClick={onToggleChatbot} 
             type="button" 
-            aria-label="Toggle AI Assistant" 
-            title="AI Assistant"
+            aria-label={t("header.aiAssistant")}
+            title={t("header.aiAssistant")}
           >
             <img 
               src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/webp/microsoft-copilot.webp" 

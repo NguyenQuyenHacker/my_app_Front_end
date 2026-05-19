@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCurrentUser } from "../../api/userApi";
+import { getCustomerInfo } from "../../api/userApi";
 import { clearClientToken } from "../../../utils/authUtils";
 
 const Dashboard = () => {
@@ -10,7 +10,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getCurrentUser();
+        const result = await getCustomerInfo();
         setData(result);
       } catch (error) {
         if (error.response?.status === 401) {
