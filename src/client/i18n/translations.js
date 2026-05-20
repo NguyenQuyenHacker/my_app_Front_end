@@ -184,6 +184,10 @@ export const translations = {
 
       txEmpty: "Chưa có giao dịch nào.",
       txDefault: "Giao dịch",
+      today: "Hôm nay",
+      yesterday: "Hôm qua",
+      statusProcessing: "Đang xử lý",
+      statusFailed: "Thất bại",
     },
 
     transfer: {
@@ -193,7 +197,7 @@ export const translations = {
       tabInternal: "Nội bộ TCB",
       tabExternal: "Ngân hàng khác",
       bankCodeLabel: "Mã ngân hàng nhận",
-      bankCodePlaceholder: "VD: VCB, BIDV, MB...",
+      bankCodePlaceholder: "Chọn ngân hàng",
       accountNoLabel: "Số tài khoản nhận",
       accountNoPlaceholder: "Nhập số tài khoản",
       amountLabel: "Số tiền",
@@ -219,12 +223,16 @@ export const translations = {
       successBalance: "Số dư mới",
       successRef: "Mã tham chiếu",
       failureReason: "Lý do thất bại",
-      errMissingBankCode: "Vui lòng nhập mã ngân hàng nhận.",
+      errMissingBankCode: "Vui lòng chọn ngân hàng nhận.",
       errMissingAccount: "Vui lòng nhập số tài khoản nhận.",
       errInvalidAmount: "Số tiền không hợp lệ.",
       errMissingOtp: "Vui lòng nhập OTP.",
       errSessionExpired: "Phiên xác nhận đã hết hạn. Vui lòng thử lại từ đầu.",
       errCannotTransfer: "Không thể thực hiện chuyển tiền.",
+      fromLabel: "Từ",
+      paymentAccount: "Tài khoản thanh toán",
+      lookingUp: "Đang tra cứu...",
+      recipientNotFound: "Không tìm thấy tài khoản người nhận",
     },
 
     customerInfor: {
@@ -505,6 +513,10 @@ export const translations = {
 
       txEmpty: "No transactions yet.",
       txDefault: "Transaction",
+      today: "Today",
+      yesterday: "Yesterday",
+      statusProcessing: "Processing",
+      statusFailed: "Failed",
     },
 
     transfer: {
@@ -540,12 +552,16 @@ export const translations = {
       successBalance: "New balance",
       successRef: "Reference",
       failureReason: "Failure reason",
-      errMissingBankCode: "Please enter the receiver bank code.",
+      errMissingBankCode: "Please choose the receiver bank.",
       errMissingAccount: "Please enter the receiver account number.",
       errInvalidAmount: "Invalid amount.",
       errMissingOtp: "Please enter OTP.",
       errSessionExpired: "Confirmation session expired. Please start over.",
       errCannotTransfer: "Unable to perform transfer.",
+      fromLabel: "From",
+      paymentAccount: "Payment account",
+      lookingUp: "Looking up...",
+      recipientNotFound: "Receiver account not found",
     },
 
     customerInfor: {

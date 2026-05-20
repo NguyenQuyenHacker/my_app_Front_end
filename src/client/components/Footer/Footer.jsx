@@ -28,17 +28,37 @@ export default function Footer() {
           <div className={styles.line}>{t("footer.swift")}</div>
 
           <div className={styles.socials}>
-            <a href="#facebook" className={styles.socialBtn} aria-label="Facebook">
+            <a
+              href="https://www.facebook.com/Techcombank/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialBtn}
+              aria-label="Facebook"
+            >
               <Facebook size={16} strokeWidth={2.5} />
             </a>
-            <a href="#linkedin" className={styles.socialBtn} aria-label="LinkedIn">
+            <a
+              href="https://www.linkedin.com/company/techcombank"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialBtn}
+              aria-label="LinkedIn"
+            >
               <Linkedin size={16} strokeWidth={2.5} />
             </a>
-            <a href="#youtube" className={styles.socialBtn} aria-label="YouTube">
+            <a
+              href="https://youtube.com/user/TechcomBankVietnam"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialBtn}
+              aria-label="YouTube"
+            >
               <Youtube size={16} strokeWidth={2.5} />
             </a>
             <a
-              href="#zalo"
+              href="https://zalo.me/990032437451686927"
+              target="_blank"
+              rel="noopener noreferrer"
               className={`${styles.socialBtn} ${styles.socialZalo}`}
               aria-label="Zalo"
             >

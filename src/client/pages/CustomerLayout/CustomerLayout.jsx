@@ -80,7 +80,6 @@ export default function CustomerLayout() {
             <Outlet />
             <Footer />
           </main>
-
         </div>
       </div>
 

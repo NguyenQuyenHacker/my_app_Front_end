@@ -1,8 +1,9 @@
 .footer {
   background-color: var(--color-bg-secondary);
-  padding: var(--space-12) 0 var(--space-6);
+  padding: 32px 0 20px;
   color: var(--color-primary-text);
   flex-shrink: 0;
+  margin-top: auto;
   font-family: var(--font-sans);
 }
 
@@ -15,49 +16,49 @@
 .contactBlock {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding-bottom: var(--space-10);
+  gap: 6px;
+  padding-bottom: 20px;
 }
 
 .contactTitle {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  font-size: var(--fs-xl);
+  gap: var(--space-2);
+  font-size: var(--fs-lg);
   font-weight: var(--fw-medium);
   color: var(--color-heading);
-  margin: 0 0 var(--space-1);
+  margin: 0 0 4px;
 }
 
 .contactLogo {
-  height: 22px;
+  height: 18px;
   width: auto;
   display: block;
 }
 
 .phone {
-  font-size: 26px;
+  font-size: 22px;
   font-weight: var(--fw-medium);
   color: var(--color-primary-text);
-  margin: var(--space-1) 0 var(--space-2);
+  margin: 4px 0 6px;
   letter-spacing: 0.2px;
 }
 
 .line {
-  font-size: var(--fs-base);
+  font-size: 14px;
   color: var(--color-primary-text);
-  line-height: var(--lh-base);
+  line-height: 1.5;
 }
 
 .socials {
   display: flex;
-  gap: var(--space-3);
-  margin-top: var(--space-6);
+  gap: 10px;
+  margin-top: 16px;
 }
 
 .socialBtn {
-  width: 42px;
-  height: 42px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-circle);
   background: var(--btn-primary-bg);
   color: var(--btn-primary-text);
@@ -76,16 +77,17 @@
 }
 
 .socialZalo {
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.3px;
 }
 
 .copyright {
-  margin-top: var(--space-6);
-  padding-top: var(--space-5);
-  font-size: var(--fs-sm);
+  margin-top: 16px;
+  padding-top: 16px;
+  font-size: 13px;
   color: var(--color-tertiary-text);
   font-weight: var(--fw-regular);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 @media (max-width: 768px) {
@@ -94,7 +96,7 @@
   }
 
   .phone {
-    font-size: var(--fs-2xl);
+    font-size: 16px;
   }
 
   .socials {

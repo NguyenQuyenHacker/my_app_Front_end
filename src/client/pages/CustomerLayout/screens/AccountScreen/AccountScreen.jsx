@@ -49,7 +49,7 @@ const AccountScreen = () => {
   const customer = data?.customer || null;
   const account = data?.account || null;
   const card = data?.card || null;
-  const entries = data?.entries || [];
+  const entries = data?.transactions || data?.entries || [];
 
   const recentEntries = useMemo(() => entries.slice(0,), [entries]);
 
@@ -108,14 +108,6 @@ const AccountScreen = () => {
               >
                 {t("account.transfer")}
               </Link>
-
-              <button
-                type="button"
-                className={styles.secondaryButton}
-                onClick={() => window.location.reload()}
-              >
-                {t("account.reload")}
-              </button>
             </div>
           </div>
 
