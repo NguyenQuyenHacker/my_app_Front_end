@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Wallet, ChevronDown, Search, X } from "lucide-react";
 
 import { getAccountOverview } from "../../../../api/accountApi";
@@ -53,6 +53,7 @@ const formatDateTime = (iso) => {
 
 const TransferScreen = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const t = useT();
 
   const [form, setForm] = useState(initialForm);
@@ -72,6 +73,51 @@ const TransferScreen = () => {
   const [bankPickerOpen, setBankPickerOpen] = useState(false);
   const [bankSearch, setBankSearch] = useState("");
   const bankPickerRef = useRef(null);
+
+  // Pre-fill từ chatbot agent (route state).
+  const fromAgentHandledRef = useRef(null);
+  const skipAutoLookupRef = useRef(false);
+  useEffect(() => {
+    const fromAgent = location.state?.fromAgent;
+    if (!fromAgent || !fromAgent.session_id) return;
+    
+    // Ngăn chặn xử lý lại cùng một session_id (ví dụ do StrictMode hoặc location update)
+    if (fromAgentHandledRef.current === fromAgent.session_id) return;
+    fromAgentHandledRef.current = fromAgent.session_id;
+
+    skipAutoLookupRef.current = true;
+
+    const isInternal = fromAgent.transfer_type === "internal";
+    setForm({
+      type: isInternal ? TRANSFER_TYPES.INTERNAL : TRANSFER_TYPES.EXTERNAL,
+      to_account_no: fromAgent.to_account_no ?? "",
+      to_bank_code: isInternal ? "" : (fromAgent.to_bank_code ?? ""),
+      amount: String(fromAgent.amount ?? ""),
+      description: fromAgent.description ?? "",
+      otp: "",
+    });
+    setRecipient({
+      account_no: fromAgent.to_account_no,
+      bank_code: fromAgent.to_bank_code,
+      full_name: fromAgent.to_name,
+    });
+    setInitData({
+      session_id: fromAgent.session_id,
+      transfer_type: fromAgent.transfer_type,
+      to_account_no: fromAgent.to_account_no,
+      to_bank_code: fromAgent.to_bank_code,
+      to_name: fromAgent.to_name,
+      amount: fromAgent.amount,
+      fee: fromAgent.fee,
+      description: fromAgent.description,
+      expires_at: fromAgent.expires_at,
+    });
+    setConfirmKey(newIdempotencyKey());
+    setStep(2);
+
+    // Clear route state để reload không trigger lại
+    navigate(location.pathname, { replace: true, state: {} });
+  }, [location.state, navigate]);
 
   useEffect(() => {
     if (!bankPickerOpen) return;
@@ -113,6 +159,11 @@ const TransferScreen = () => {
 
   // Auto-lookup recipient when input is filled
   useEffect(() => {
+    // Bỏ qua 1 lần nếu data đến từ chatbot agent (đã có recipient từ trước)
+    if (skipAutoLookupRef.current) {
+      skipAutoLookupRef.current = false;
+      return;
+    }
     setRecipient(null);
     setRecipientError("");
 

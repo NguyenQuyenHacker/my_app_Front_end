@@ -4,6 +4,7 @@ import { AppMessage, MessageMeta } from "../core/types";
 import { getMessageText, getMessageKind } from "../core/utils";
 import { BranchSwitcher } from "./BranchSwitcher";
 import { MarkdownText } from "./MarkdownText";
+import { useT } from "../../../i18n/LanguageContext";
 import styles from "../ChatbotBar.module.css";
 
 export type MessageCardProps = {
@@ -29,6 +30,7 @@ export function MessageCard({
   onRegenerate,
   onSwitchBranch,
 }: MessageCardProps) {
+  const t = useT();
   const appMessage = message as AppMessage;
   const text = getMessageText(appMessage);
   const kind = getMessageKind(appMessage);
@@ -57,9 +59,15 @@ export function MessageCard({
   if (kind === "human") {
     return (
       <div key={messageId} className={`${styles.messageRow} ${styles.humanRow}`}>
-        <div className={`${styles.messageBlock} ${styles.humanBlock}`}>
+        <div
+          className={`${styles.messageBlock} ${styles.humanBlock} ${
+            editing ? styles.messageBlockEditing : ""
+          }`}
+        >
           {editing ? (
-            <div className={`${styles.messageBubble} ${styles.humanBubble}`}>
+            <div
+              className={`${styles.messageBubble} ${styles.humanBubble} ${styles.messageBubbleEditing}`}
+            >
               <textarea
                 rows={4}
                 value={draft}
@@ -67,28 +75,30 @@ export function MessageCard({
                 className={styles.editTextarea}
                 onChange={(e) => setDraft(e.target.value)}
               />
-              <div className={styles.messageActions}>
-                <button
-                  type="button"
-                  className={styles.primaryAction}
-                  disabled={loading || !draft.trim()}
-                  onClick={handleSave}
-                >
-                  Lưu & chạy lại
-                </button>
+              <div
+                className={`${styles.messageActions} ${styles.messageActionsEdit}`}
+              >
+                <BranchSwitcher
+                  meta={meta}
+                  disabled={loading}
+                  onSwitch={onSwitchBranch}
+                />
                 <button
                   type="button"
                   className={styles.secondaryAction}
                   disabled={loading}
                   onClick={handleCancel}
                 >
-                  Hủy
+                  {t("chatbot.cancel")}
                 </button>
-                <BranchSwitcher
-                  meta={meta}
-                  disabled={loading}
-                  onSwitch={onSwitchBranch}
-                />
+                <button
+                  type="button"
+                  className={styles.primaryAction}
+                  disabled={loading || !draft.trim()}
+                  onClick={handleSave}
+                >
+                  {t("chatbot.saveAndRerun")}
+                </button>
               </div>
             </div>
           ) : (
@@ -103,7 +113,7 @@ export function MessageCard({
                   disabled={loading}
                   onClick={() => setEditing(true)}
                 >
-                  Sửa
+                  {t("chatbot.edit")}
                 </button>
                 <BranchSwitcher
                   meta={meta}
@@ -132,7 +142,7 @@ export function MessageCard({
               disabled={loading}
               onClick={() => onRegenerate(meta)}
             >
-              Regenerate
+              {t("chatbot.regenerate")}
             </button>
             <BranchSwitcher
               meta={meta}

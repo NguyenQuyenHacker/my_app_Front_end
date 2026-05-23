@@ -80,7 +80,7 @@ export function ApprovalCard({
   const canReject = allowed.includes("reject");
   
   const actionName = actionRequest.action || actionRequest.name;
-  const isTransferMoney = actionName === "create_transfer_request";
+  const isTransferMoney = actionName === "transfer_confirm";
 
   if (isEditing) {
     return (
@@ -202,7 +202,7 @@ export function ApprovalCard({
         {showRejectInput && (
           <div className={styles.inputGroup}>
             <label htmlFor="reject-reason" className={styles.inputLabel}>
-              Lý do từ chối <span style={{ fontWeight: 'normal', opacity: 0.7 }}>(không bắt buộc)</span>
+              Lý do từ chối <span className={styles.optionalHint}>(không bắt buộc)</span>
             </label>
             <input
               id="reject-reason"
@@ -239,8 +239,7 @@ export function ApprovalCard({
                   setShowRejectInput(false);
                 }}
                 disabled={isProcessing}
-                className={`${styles.btn} ${styles.btnReject}`}
-                style={{ backgroundColor: '#dc2626', color: 'white' }}
+                className={`${styles.btn} ${styles.btnRejectStrong}`}
               >
                 <XIcon className={styles.btnIcon} />
                 Xác nhận từ chối

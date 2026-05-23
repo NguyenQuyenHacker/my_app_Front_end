@@ -9,9 +9,11 @@ import {
 } from "./core/api";
 import { HistoryView } from "./components/HistoryView";
 import { ChatView } from "./components/ChatView";
+import { useT } from "../../i18n/LanguageContext";
 import styles from "./ChatbotBar.module.css";
 
 export default function ChatbotBar({ onClose }: ChatbotBarProps) {
+  const t = useT();
   const [threads, setThreads] = useState<UserThread[]>([]);
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "success">(
@@ -38,7 +40,7 @@ export default function ChatbotBar({ onClose }: ChatbotBarProps) {
       setShowHistory(false);
     } catch (error) {
       console.error(error);
-      alert("Không thể tạo chat mới.");
+      alert(t("chatbot.cannotCreateThread"));
     }
   };
 
@@ -62,7 +64,7 @@ export default function ChatbotBar({ onClose }: ChatbotBarProps) {
       }
     } catch (error) {
       console.error(error);
-      alert("Không thể xóa cuộc trò chuyện.");
+      alert(t("chatbot.cannotDeleteThread"));
     }
   };
 
@@ -90,7 +92,7 @@ export default function ChatbotBar({ onClose }: ChatbotBarProps) {
         if (!mounted) return;
         console.error(err);
         setErrorMsg(
-          err instanceof Error ? err.message : "Không tải được danh sách thread"
+          err instanceof Error ? err.message : t("chatbot.cannotLoadThreads")
         );
         setStatus("error");
       });
@@ -101,11 +103,11 @@ export default function ChatbotBar({ onClose }: ChatbotBarProps) {
   }, []);
 
   if (status === "loading") {
-    return <div className={styles.centerState}>Đang tải lịch sử chat...</div>;
+    return <div className={styles.centerState}>{t("chatbot.loadingThreads")}</div>;
   }
 
   if (status === "error") {
-    return <div className={styles.centerError}>Lỗi: {errorMsg}</div>;
+    return <div className={styles.centerError}>{t("chatbot.errorPrefix")}{errorMsg}</div>;
   }
 
   return (
@@ -130,14 +132,14 @@ export default function ChatbotBar({ onClose }: ChatbotBarProps) {
       ) : (
         <div className={styles.emptyState}>
           <div className={styles.emptyStateCard}>
-            <h3>Chưa có cuộc trò chuyện nào</h3>
-            <p>Bắt đầu một cuộc trò chuyện mới với trợ lý AI.</p>
+            <h3>{t("chatbot.emptyTitle")}</h3>
+            <p>{t("chatbot.emptyDesc")}</p>
             <button
               type="button"
               className={styles.historyNewButton}
               onClick={handleCreateNewThread}
             >
-              Tạo chat đầu tiên
+              {t("chatbot.createFirst")}
             </button>
           </div>
         </div>

@@ -42,6 +42,11 @@ export const isVisibleMessage = (msg: BaseMessage): boolean => {
     return false;
   }
 
+  // Ẩn AI message "internal" (chỉ gọi tool, không có text cho user)
+  if (kind === "ai" && !text && toolCalls.length > 0) {
+    return false;
+  }
+
   return kind === "human" || kind === "ai";
 };
 

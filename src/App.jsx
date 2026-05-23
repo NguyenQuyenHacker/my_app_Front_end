@@ -7,6 +7,8 @@ import CustomerInfor from "./client/pages/CustomerLayout/screens/CustomerInfor/C
 import CustomerHomePage from "./client/pages/CustomerLayout/screens/CustomerHomePage/CustomerHomePage";
 import AccountScreen from "./client/pages/CustomerLayout/screens/AccountScreen/AccountScreen";
 import TransferScreen from "./client/pages/CustomerLayout/screens/TransferScreen/TransferScreen";
+import SavingsScreen from "./client/pages/CustomerLayout/screens/SavingsScreen/SavingsScreen";
+import StatisticsScreen from "./client/pages/CustomerLayout/screens/StatisticsScreen/StatisticsScreen";
 import SettingsLayout from "./client/pages/CustomerLayout/screens/Settings/SettingsLayout";
 import SettingsProfile from "./client/pages/CustomerLayout/screens/Settings/tabs/SettingsProfile";
 import SettingsSecurity from "./client/pages/CustomerLayout/screens/Settings/tabs/SettingsSecurity";
@@ -54,6 +56,8 @@ function App() {
             <Route path="infor" element={<CustomerInfor />} />
             <Route path="accounts" element={<AccountScreen />} />
             <Route path="transfer" element={<TransferScreen />} />
+            <Route path="savings" element={<SavingsScreen />} />
+            <Route path="statistics" element={<StatisticsScreen />} />
             <Route path="settings" element={<SettingsLayout />}>
               <Route index element={<Navigate to="profile" replace />} />
               <Route path="profile" element={<SettingsProfile />} />

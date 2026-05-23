@@ -11,7 +11,7 @@ import Footer from "../../components/Footer/Footer";
 export default function CustomerLayout() {
   const MIN_WIDTH = 320;
 
-  const MAX_WIDTH = 520;
+  const MAX_WIDTH = 720;
 
   const [chatbotWidth, setChatbotWidth] = useState(360);
   const [isDragging, setIsDragging] = useState(false);

@@ -1,0 +1,314 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+  padding: var(--space-10);
+  background: var(--color-bg-subtle);
+  font-family: var(--font-sans);
+  color: var(--color-primary-text);
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: var(--fs-4xl);
+  font-weight: var(--fw-medium);
+  color: var(--color-heading);
+  letter-spacing: -0.01em;
+}
+
+.pageSubtitle {
+  margin: var(--space-2) 0 0;
+  color: var(--color-tertiary-text);
+  font-size: var(--fs-lg);
+}
+
+.monthPicker {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.monthLabel {
+  font-size: var(--fs-sm);
+  color: var(--color-tertiary-text);
+}
+
+.monthInput {
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-4);
+  font-size: var(--fs-base);
+  background: var(--color-bg);
+  color: var(--color-primary-text);
+  font-family: inherit;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-5);
+  max-width: 1280px;
+  width: 100%;
+  align-self: center;
+}
+
+.card {
+  background: var(--color-bg);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cardTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: var(--color-heading);
+  margin: 0;
+}
+
+.cardSub {
+  font-size: var(--fs-sm);
+  color: var(--color-tertiary-text);
+}
+
+.colFull {
+  grid-column: span 12;
+}
+
+.colHalf {
+  grid-column: span 6;
+}
+
+.col4 {
+  grid-column: span 4;
+}
+
+.col8 {
+  grid-column: span 8;
+}
+
+.kpiRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+
+.kpi {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  box-shadow: var(--shadow-sm);
+}
+
+.kpiLabel {
+  font-size: var(--fs-sm);
+  color: var(--color-tertiary-text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.kpiValue {
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-medium);
+  color: var(--color-primary-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.kpiValueIncome {
+  color: var(--color-success);
+}
+
+.kpiValueExpense {
+  color: var(--color-danger);
+}
+
+.kpiChange {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+
+.kpiChangeUp {
+  color: var(--color-success);
+}
+
+.kpiChangeDown {
+  color: var(--color-danger);
+}
+
+.kpiChangeFlat {
+  color: var(--color-tertiary-text);
+}
+
+.chartBox {
+  width: 100%;
+  height: 280px;
+}
+
+.chartBoxTall {
+  width: 100%;
+  height: 320px;
+}
+
+.legendList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.legendRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-subtle);
+}
+
+.legendLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.legendDot {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-circle);
+  flex-shrink: 0;
+}
+
+.legendName {
+  font-size: var(--fs-base);
+  color: var(--color-primary-text);
+  font-weight: var(--fw-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.legendValue {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  color: var(--color-primary-text);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.legendMeta {
+  font-size: var(--fs-xs);
+  color: var(--color-tertiary-text);
+}
+
+.topList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.topRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.topRank {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-circle);
+  background: var(--color-bg-info-subtle);
+  color: var(--color-info);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-md);
+}
+
+.topRankGold { background: #FFF6DC; color: #B07900; }
+.topRankSilver { background: #ECEFF3; color: #4D5C75; }
+.topRankBronze { background: #FCE6D8; color: #A04500; }
+
+.topName {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  color: var(--color-primary-text);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.topNameSub {
+  font-size: var(--fs-xs);
+  color: var(--color-tertiary-text);
+  font-weight: var(--fw-regular);
+}
+
+.topValue {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-primary-text);
+  text-align: right;
+}
+
+.topValueSub {
+  font-size: var(--fs-xs);
+  color: var(--color-tertiary-text);
+  font-weight: var(--fw-regular);
+}
+
+.empty {
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--color-tertiary-text);
+  font-size: var(--fs-md);
+  background: var(--color-bg-subtle);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-border);
+}
+
+.error {
+  border-radius: var(--radius-md);
+  background: var(--color-bg-danger-subtle);
+  border: 1px solid rgba(224, 23, 0, 0.2);
+  color: var(--color-danger);
+  padding: var(--space-3) var(--space-5);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-base);
+}
+
+@media (max-width: 1100px) {
+  .colHalf, .col4, .col8 { grid-column: span 12; }
+}
+
+@media (max-width: 900px) {
+  .wrapper { padding: var(--space-6); }
+  .card { padding: var(--space-5); }
+  .pageHeader { flex-direction: column; align-items: flex-start; }
+}

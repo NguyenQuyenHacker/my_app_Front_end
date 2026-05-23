@@ -1,86 +1,88 @@
+/* ApprovalCard & TransferConfirmCard — Techcombank UI style */
+
 .card {
   width: calc(100% - 32px);
   max-width: 380px;
-  margin: 16px;
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-lg);
-  background: var(--white);
-  box-shadow: var(--shadow-lg);
+  margin: var(--space-4);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-card);
   overflow: hidden;
-  font-family: var(--font-main);
+  font-family: var(--font-sans);
 }
 
 .header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border-soft);
-  background: linear-gradient(180deg, var(--white) 0%, var(--page-bg) 100%);
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: var(--color-bg);
 }
 
 .headerIcon {
   width: 20px;
   height: 20px;
-  color: var(--tcb-red);
+  color: var(--color-danger);
   flex-shrink: 0;
 }
 
 .headerTitle {
   flex: 1;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--black);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  color: var(--color-heading);
 }
 
 .headerBadge {
   padding: 4px 12px;
-  border-radius: 999px;
-  background: var(--warning);
-  color: #B45309;
-  font-size: 11px;
-  font-weight: 700;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-warning-subtle);
+  color: var(--avatar-text-warm);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
 .body {
-  padding: 20px;
+  padding: var(--space-5);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .infoBox {
-  border-radius: var(--radius-md);
-  background: var(--page-bg);
-  padding: 16px;
-  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-subtle);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .actionName {
   display: inline-block;
-  margin-bottom: 12px;
-  color: var(--tcb-red);
-  font-size: 13px;
-  font-weight: 700;
-  background: var(--tcb-red-soft);
+  margin-bottom: var(--space-3);
+  color: var(--color-primary-text);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  background: var(--color-bg-secondary);
   padding: 2px 8px;
   border-radius: 4px;
+  font-family: var(--font-mono);
 }
 
 .actionDesc {
-  margin: 0 0 16px;
-  color: var(--text-main);
-  font-size: 14px;
-  line-height: 1.5;
+  margin: 0 0 var(--space-4);
+  color: var(--color-secondary-text);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
 }
 
 .argsList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .argItem {
@@ -89,18 +91,18 @@
 
 .argLabel {
   margin-bottom: 4px;
-  color: var(--text-soft);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  color: var(--color-tertiary-text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .argValue {
-  color: var(--black);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.5;
+  color: var(--color-primary-text);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-base);
   word-break: break-word;
 }
 
@@ -108,44 +110,44 @@
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
-  color: var(--black);
-  font-size: 13px;
-  line-height: 1.5;
-  font-family: ui-monospace, monospace;
-  background: var(--white);
+  color: var(--color-primary-text);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+  font-family: var(--font-mono);
+  background: var(--color-bg);
   padding: 8px;
   border-radius: 4px;
-  border: 1px solid var(--border-soft);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .inputGroup {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .inputLabel {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-main);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--color-primary-text);
 }
 
 .inputField {
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 12px;
   outline: none;
-  color: var(--black);
-  background: var(--white);
-  font-size: 14px;
-  transition: all 0.2s ease;
+  color: var(--color-primary-text);
+  background: var(--color-bg);
+  font-size: var(--fs-base);
+  font-family: var(--font-sans);
+  transition: border-color var(--transition-fast);
 }
 
 .inputField:focus {
-  border-color: var(--tcb-red);
-  box-shadow: 0 0 0 3px var(--tcb-red-soft);
+  border-color: var(--color-primary-text);
 }
 
 .textareaField {
@@ -157,63 +159,64 @@
 .otpGroup {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  border-radius: var(--radius-md);
-  padding: 16px;
-  background: var(--tcb-red-soft);
-  border: 1px solid rgba(237, 29, 36, 0.1);
+  gap: var(--space-3);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4);
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .otpLabel {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--tcb-red-dark);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--color-primary-text);
 }
 
 .otpInput {
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid rgba(237, 29, 36, 0.2);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 12px;
   outline: none;
-  color: var(--black);
-  background: var(--white);
-  font-size: 18px;
-  font-weight: 700;
+  color: var(--color-primary-text);
+  background: var(--color-bg);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-medium);
   letter-spacing: 0.2em;
   text-align: center;
+  font-family: var(--font-mono);
+  transition: border-color var(--transition-fast);
 }
 
 .otpInput:focus {
-  border-color: var(--tcb-red);
-  box-shadow: 0 0 0 3px var(--tcb-red-soft);
+  border-color: var(--color-primary-text);
 }
 
 .actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-2);
   min-height: 44px;
   border: 1px solid transparent;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   padding: 10px 16px;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 700;
-  transition: all 0.2s ease;
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  font-family: var(--font-sans);
+  transition: opacity var(--transition-fast), background var(--transition-fast);
 }
 
 .btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  filter: brightness(1.1);
+  opacity: 0.85;
 }
 
 .btn:disabled {
@@ -227,30 +230,51 @@
 }
 
 .btnApprove {
-  background: var(--tcb-red);
-  color: var(--white);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
 }
 
 .btnEdit {
-  background: var(--white);
-  color: var(--text-main);
-  border-color: var(--border);
+  background: var(--color-bg);
+  color: var(--color-primary-text);
+  border-color: var(--color-border);
+}
+
+.btnEdit:hover:not(:disabled) {
+  background: var(--color-bg-subtle);
+  opacity: 1;
 }
 
 .btnReject {
-  background: var(--white);
-  color: var(--danger);
-  border-color: var(--danger);
+  background: var(--color-bg);
+  color: var(--color-danger);
+  border-color: var(--color-border);
+}
+
+.btnReject:hover:not(:disabled) {
+  background: var(--color-bg-danger-subtle);
+  opacity: 1;
 }
 
 .btnRejectStrong {
-  background: var(--danger);
-  color: var(--white);
+  background: var(--color-danger);
+  color: var(--btn-primary-text);
+}
+
+.errorText {
+  color: var(--color-danger);
+  margin-bottom: var(--space-2);
+  font-size: var(--fs-base);
+}
+
+.optionalHint {
+  font-weight: var(--fw-regular);
+  opacity: 0.7;
 }
 
 @media (max-width: 420px) {
   .card {
     width: calc(100% - 24px);
-    margin: 12px;
+    margin: var(--space-3);
   }
 }

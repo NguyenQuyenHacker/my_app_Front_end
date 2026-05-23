@@ -65,7 +65,7 @@ export function HITLApprovalRenderer({
   if (!actionRequest) return null;
 
   const actionName = actionRequest.action || actionRequest.name;
-  const isTransferMoney = actionName === "create_transfer_request";
+  const isTransferMoney = actionName === "transfer_confirm";
 
   return (
     <ApprovalCard
