@@ -2,7 +2,7 @@ import axios from "axios";
 import { getAdminToken, clearAdminAuth } from "../../utils/authUtils";
 
 const adminApi = axios.create({
-  baseURL: "http://127.0.0.1:8000",
+  baseURL: import.meta.env.VITE_API_URL || "http://127.0.0.1:8000",
 });
 
 adminApi.interceptors.request.use((config) => {
