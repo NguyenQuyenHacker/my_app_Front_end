@@ -17,10 +17,6 @@ import SettingsDisplay from "./client/pages/CustomerLayout/screens/Settings/tabs
 import AdminLayout from "./admin/pages/AdminLayout/AdminLayout";
 import AdminOverview from "./admin/pages/AdminOverview/AdminOverview";
 import AdminUsers from "./admin/pages/AdminUsers/AdminUsers";
-import AdminCustomers from "./admin/pages/AdminCustomers/AdminCustomers";
-import AdminAccounts from "./admin/pages/AdminAccounts/AdminAccounts";
-import AdminCards from "./admin/pages/AdminCards/AdminCards";
-import AdminTransactions from "./admin/pages/AdminTransactions/AdminTransactions";
 import AdminLogin from "./admin/pages/AdminLogin/AdminLogin";
 
 // Knowledge Base Module
@@ -76,12 +72,7 @@ function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<Navigate to="overviews" replace />} />
               <Route path="overviews" element={<AdminOverview />} />
-              <Route path="users" element={<AdminUsers />} />
               <Route path="customers" element={<AdminUsers />} />
-              <Route path="accounts/list" element={<AdminAccounts />} />
-              <Route path="accounts/pending" element={<AdminAccounts />} />
-              <Route path="cards" element={<AdminCards />} />
-              <Route path="transactions" element={<AdminTransactions />} />
 
               {/* Knowledge Base Module */}
               <Route path="knowledge-bases" element={<KnowledgeBaseListPage />} />

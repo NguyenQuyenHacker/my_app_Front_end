@@ -41,3 +41,32 @@
   font-weight: 900;
   color: var(--tcb-red);
 }
+
+/* Chừa chỗ bên phải cho nút ẩn/hiện mật khẩu */
+.hasToggle {
+  padding-right: 44px;
+}
+
+.toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: color .15s, background .15s;
+}
+
+.toggle:hover {
+  color: var(--text);
+  background: rgba(0, 0, 0, .05);
+}

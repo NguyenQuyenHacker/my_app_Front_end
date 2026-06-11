@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useMemo, useState } from "react";
+import { useQueries } from "@tanstack/react-query";
 import { TrendingUp, TrendingDown, Minus, BarChart3 } from "lucide-react";
 import {
   Bar,
@@ -24,7 +24,6 @@ import {
   getTopRecipients,
   getTrend,
 } from "../../../../api/statisticsApi";
-import { clearClientToken } from "../../../../../utils/authUtils";
 import { useT } from "../../../../i18n/LanguageContext";
 import styles from "./StatisticsScreen.module.css";
 
@@ -65,54 +64,30 @@ const formatPeriod = (p) => {
 };
 
 const StatisticsScreen = () => {
-  const navigate = useNavigate();
   const t = useT();
 
   const [month, setMonth] = useState(currentMonthIso());
-  const [overview, setOverview] = useState(null);
-  const [byType, setByType] = useState(null);
-  const [daily, setDaily] = useState(null);
-  const [topRecipients, setTopRecipients] = useState(null);
-  const [trend, setTrend] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
-    const fetchAll = async () => {
-      try {
-        setLoading(true);
-        setErrorMessage("");
-        const [ov, bt, dl, tr, tg] = await Promise.all([
-          getStatisticsOverview(month),
-          getExpenseByType(month),
-          getDailyStats(month),
-          getTopRecipients(month, 5),
-          getTrend(6),
-        ]);
-        if (cancelled) return;
-        setOverview(ov);
-        setByType(bt);
-        setDaily(dl);
-        setTopRecipients(tr);
-        setTrend(tg);
-      } catch (error) {
-        if (cancelled) return;
-        if (error?.response?.status === 401) {
-          clearClientToken();
-          navigate("/login");
-          return;
-        }
-        setErrorMessage(error.response?.data?.detail || t("statistics.errLoad"));
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-    fetchAll();
-    return () => {
-      cancelled = true;
-    };
-  }, [month, navigate, t]);
+  const results = useQueries({
+    queries: [
+      { queryKey: ["stats", "overview", month], queryFn: () => getStatisticsOverview(month) },
+      { queryKey: ["stats", "byType", month], queryFn: () => getExpenseByType(month) },
+      { queryKey: ["stats", "daily", month], queryFn: () => getDailyStats(month) },
+      { queryKey: ["stats", "topRecipients", month], queryFn: () => getTopRecipients(month, 5) },
+      { queryKey: ["stats", "trend", 6], queryFn: () => getTrend(6) },
+    ],
+  });
+  const [overviewQ, byTypeQ, dailyQ, topRecipientsQ, trendQ] = results;
+  const overview = overviewQ.data;
+  const byType = byTypeQ.data;
+  const daily = dailyQ.data;
+  const topRecipients = topRecipientsQ.data;
+  const trend = trendQ.data;
+  const loading = results.some((r) => r.isLoading);
+  const firstError = results.find((r) => r.isError)?.error;
+  const errorMessage = firstError
+    ? firstError.response?.data?.detail || t("statistics.errLoad")
+    : "";
 
   const dailyChartData = useMemo(() => {
     if (!daily?.points) return [];

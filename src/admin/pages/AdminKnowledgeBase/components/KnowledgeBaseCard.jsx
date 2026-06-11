@@ -1,10 +1,10 @@
 /* src/admin/pages/AdminKnowledgeBase/components/KnowledgeBaseCard.jsx */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Calendar, User, ChevronRight, Power } from 'lucide-react';
+import { FileText, Calendar, User, ChevronRight, Trash2 } from 'lucide-react';
 import styles from './KnowledgeBaseCard.module.css';
 
-const KnowledgeBaseCard = ({ kb, onToggle }) => {
+const KnowledgeBaseCard = ({ kb, onToggle, onDelete }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -18,21 +18,38 @@ const KnowledgeBaseCard = ({ kb, onToggle }) => {
     }
   };
 
+  const handleDeleteClick = (e) => {
+    e.stopPropagation();
+    if (onDelete) {
+      onDelete(kb);
+    }
+  };
+
   return (
     <div className={`${styles.card} ${!kb.isActive ? styles.cardDisabled : ''}`} onClick={handleClick}>
       <div className={styles.cardHeader}>
         <div className={styles.iconWrapper}>
           <FileText size={24} color={kb.isActive ? "#e50020" : "#94a3b8"} />
         </div>
-        <div 
-          className={`${styles.toggle} ${kb.isActive ? styles.toggleActive : ''}`}
-          onClick={handleToggleClick}
-          title={kb.isActive ? "Disable Knowledge Base" : "Enable Knowledge Base"}
-        >
-          <div className={styles.toggleHandle} />
+        <div className={styles.headerActions}>
+          <button
+            type="button"
+            className={styles.deleteBtn}
+            onClick={handleDeleteClick}
+            title="Xoá Knowledge Base"
+          >
+            <Trash2 size={16} />
+          </button>
+          <div
+            className={`${styles.toggle} ${kb.isActive ? styles.toggleActive : ''}`}
+            onClick={handleToggleClick}
+            title={kb.isActive ? "Disable Knowledge Base" : "Enable Knowledge Base"}
+          >
+            <div className={styles.toggleHandle} />
+          </div>
         </div>
       </div>
-      
+
       <div className={styles.cardBody}>
         <h3 className={styles.title}>{kb.name}</h3>
         <p className={styles.description}>{kb.description}</p>

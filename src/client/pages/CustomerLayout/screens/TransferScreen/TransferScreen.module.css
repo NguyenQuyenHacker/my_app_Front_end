@@ -1,8 +1,8 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  gap: var(--space-7);
-  padding: var(--space-10) var(--space-10) var(--space-10);
+  gap: var(--space-5);
+  padding: var(--space-7);
   background: var(--color-bg-subtle);
   font-family: var(--font-sans);
   color: var(--color-primary-text);
@@ -13,21 +13,21 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 .pageTitle {
   margin: 0;
-  font-size: var(--fs-4xl);
+  font-size: var(--fs-3xl);
   font-weight: var(--fw-medium);
   color: var(--color-heading);
   letter-spacing: -0.01em;
 }
 
 .pageSubtitle {
-  margin: var(--space-2) 0 0;
+  margin: var(--space-1) 0 0;
   color: var(--color-tertiary-text);
-  font-size: var(--fs-lg);
+  font-size: var(--fs-base);
   font-weight: var(--fw-regular);
 }
 
@@ -37,8 +37,8 @@
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
-  padding: 12px 28px;
-  font-size: var(--fs-base);
+  padding: 10px var(--space-5);
+  font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
   transition: opacity var(--transition-fast), background var(--transition-fast);
 }
@@ -50,8 +50,8 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-  max-width: 880px;
+  gap: var(--space-4);
+  max-width: 840px;
   width: 100%;
   align-self: center;
 }
@@ -59,7 +59,7 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-4);
 }
 
 /* Card */
@@ -68,10 +68,10 @@
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border-subtle);
   box-shadow: var(--shadow-sm);
-  padding: var(--space-10);
+  padding: var(--space-6) var(--space-7);
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-4);
 }
 
 /* Tabs */
@@ -85,8 +85,8 @@
   flex: 0 0 auto;
   background: transparent;
   border: none;
-  padding: var(--space-4) var(--space-6);
-  font-size: var(--fs-lg);
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--fs-base);
   font-weight: var(--fw-regular);
   color: var(--color-tertiary-text);
   cursor: pointer;
@@ -118,21 +118,21 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
 .label {
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
   color: var(--color-secondary-text);
 }
 
 .input {
-  height: 56px;
+  height: 46px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 0 var(--space-5);
-  font-size: var(--fs-lg);
+  padding: 0 var(--space-4);
+  font-size: var(--fs-base);
   font-weight: var(--fw-regular);
   color: var(--color-primary-text);
   background: var(--color-bg);
@@ -154,12 +154,12 @@
 }
 
 .textarea {
-  min-height: 110px;
+  min-height: 88px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: var(--space-4) var(--space-5);
+  padding: var(--space-3) var(--space-4);
   font-family: inherit;
-  font-size: var(--fs-lg);
+  font-size: var(--fs-base);
   color: var(--color-primary-text);
   background: var(--color-bg);
   resize: vertical;
@@ -178,11 +178,11 @@
 
 .select {
   width: 100%;
-  height: 56px;
+  height: 46px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 0 44px 0 var(--space-5);
-  font-size: var(--fs-lg);
+  padding: 0 40px 0 var(--space-4);
+  font-size: var(--fs-base);
   color: var(--color-primary-text);
   background: var(--color-bg);
   appearance: none;
@@ -212,15 +212,15 @@
 
 .bankTrigger {
   width: 100%;
-  min-height: 64px;
+  min-height: 52px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-bg);
-  padding: var(--space-3) var(--space-5);
+  padding: var(--space-2) var(--space-4);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--space-3);
   cursor: pointer;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   text-align: left;
@@ -251,7 +251,7 @@
 }
 
 .bankTriggerShort {
-  font-size: var(--fs-lg);
+  font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   color: var(--color-primary-text);
   line-height: 1.3;
@@ -268,7 +268,7 @@
 }
 
 .bankTriggerPlaceholder {
-  font-size: var(--fs-lg);
+  font-size: var(--fs-base);
   color: var(--color-tertiary-text);
   font-weight: var(--fw-regular);
 }
@@ -366,8 +366,8 @@
   width: 100%;
   display: flex;
   align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-4) var(--space-6);
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -397,7 +397,7 @@
 }
 
 .bankItemShort {
-  font-size: var(--fs-lg);
+  font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   color: var(--color-primary-text);
 }
@@ -451,7 +451,7 @@
 
 /* Source account row */
 .fromLabel {
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   color: var(--color-secondary-text);
   font-weight: var(--fw-medium);
 }
@@ -459,16 +459,16 @@
 .sourceRow {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
-  padding: var(--space-5) var(--space-6);
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-md);
   background: var(--color-bg-subtle);
 }
 
 .sourceIcon {
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-circle);
   background: var(--color-bg);
   border: 1px solid var(--color-border-subtle);
@@ -488,13 +488,13 @@
 }
 
 .sourceTitle {
-  font-size: var(--fs-lg);
+  font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   color: var(--color-primary-text);
 }
 
 .sourceAccountNo {
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   color: var(--color-link);
   font-weight: var(--fw-regular);
 }
@@ -507,12 +507,12 @@
 }
 
 .balanceCurrency {
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   color: var(--color-tertiary-text);
 }
 
 .balanceValue {
-  font-size: var(--fs-2xl);
+  font-size: var(--fs-xl);
   font-weight: var(--fw-medium);
   color: var(--color-primary-text);
   font-variant-numeric: tabular-nums;
@@ -521,7 +521,7 @@
 /* Amount input */
 .amountRow {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-2);
   align-items: stretch;
 }
 
@@ -529,10 +529,10 @@
   background: var(--color-bg-subtle);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 0 var(--space-5);
+  padding: 0 var(--space-4);
   display: flex;
   align-items: center;
-  font-size: var(--fs-lg);
+  font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   color: var(--color-secondary-text);
   flex-shrink: 0;
@@ -543,14 +543,14 @@
   text-align: right;
   font-variant-numeric: tabular-nums;
   font-weight: var(--fw-medium);
-  font-size: var(--fs-2xl);
-  height: 64px;
+  font-size: var(--fs-xl);
+  height: 52px;
 }
 
 .quickAmounts {
   display: flex;
-  gap: var(--space-3);
-  margin-top: var(--space-3);
+  gap: var(--space-2);
+  margin-top: var(--space-2);
   flex-wrap: wrap;
 }
 
@@ -558,8 +558,8 @@
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 10px var(--space-5);
-  font-size: var(--fs-base);
+  padding: 8px var(--space-4);
+  font-size: var(--fs-sm);
   font-weight: var(--fw-regular);
   color: var(--color-primary-text);
   cursor: pointer;
@@ -573,7 +573,7 @@
 
 /* Confirm summary */
 .confirmTitle {
-  font-size: var(--fs-2xl);
+  font-size: var(--fs-xl);
   font-weight: var(--fw-medium);
   color: var(--color-heading);
 }
@@ -581,19 +581,19 @@
 .summary {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
   background: var(--color-bg-subtle);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-md);
-  padding: var(--space-6);
+  padding: var(--space-5);
 }
 
 .summaryRow {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: var(--space-4);
-  font-size: var(--fs-md);
+  gap: var(--space-3);
+  font-size: var(--fs-base);
 }
 
 .summaryLabel {
@@ -610,7 +610,7 @@
 .summaryAmount {
   color: var(--color-danger);
   font-weight: var(--fw-medium);
-  font-size: var(--fs-2xl);
+  font-size: var(--fs-xl);
   font-variant-numeric: tabular-nums;
 }
 
@@ -624,17 +624,17 @@
   background: var(--color-bg);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border-subtle);
-  padding: var(--space-10);
+  padding: var(--space-7);
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  font-size: var(--fs-md);
+  gap: var(--space-2);
+  font-size: var(--fs-base);
   color: var(--color-primary-text);
 }
 
 .statusTitle {
-  margin: 0 0 var(--space-3);
-  font-size: var(--fs-2xl);
+  margin: 0 0 var(--space-2);
+  font-size: var(--fs-xl);
   font-weight: var(--fw-medium);
   color: var(--color-heading);
 }
@@ -667,8 +667,8 @@
   justify-content: center;
   border: 1px solid transparent;
   border-radius: var(--radius-pill);
-  padding: 14px 36px;
-  font-size: var(--fs-lg);
+  padding: 11px var(--space-7);
+  font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   cursor: pointer;
   text-decoration: none;

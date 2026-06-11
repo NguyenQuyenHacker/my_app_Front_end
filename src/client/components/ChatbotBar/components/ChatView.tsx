@@ -1,17 +1,21 @@
 /// <reference types="vite/client" />
 import { useState, useMemo, useEffect, useRef, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Client } from "@langchain/langgraph-sdk";
 import { useStream } from "@langchain/react";
 import type { BaseMessage } from "@langchain/core/messages";
 import { AppMessage, CheckpointRef, MessageMeta } from "../core/types";
 import { isVisibleMessage, getAccessToken } from "../core/utils";
 import { AGENT_URL, ASSISTANT_ID } from "../core/constants";
+import { fetchQuota } from "../core/api";
+import { Mic } from "lucide-react";
 import { MessageCard } from "./MessageCard";
 import { HITLApprovalRenderer } from "./HITLApprovalRenderer";
 import { ClockIcon, PlusIcon, SendIcon } from "./Icons";
 import type { PendingTransfer } from "./TransferConfirmCard";
-import { useT } from "../../../i18n/LanguageContext";
+import { useT, useLanguage } from "../../../i18n/LanguageContext";
+import { useSpeechRecognition } from "../core/useSpeechRecognition";
 import styles from "../ChatbotBar.module.css";
 
 const TRANSFER_PENDING_MARKER = "[TRANSFER_PENDING]";
@@ -81,12 +85,39 @@ export function ChatView({
 }) {
   const navigate = useNavigate();
   const t = useT();
+  const { language } = useLanguage();
+  const queryClient = useQueryClient();
   const [prompt, setPrompt] = useState("");
   const [handledSessions, setHandledSessions] = useState<Set<string>>(() =>
     loadHandledSessions()
   );
   const navigatedRef = useRef<Set<string>>(new Set());
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Hạn mức token/ngày — hiển thị + chặn ô nhập khi hết
+  const { data: quota } = useQuery({
+    queryKey: ["chatQuota"],
+    queryFn: fetchQuota,
+    staleTime: 30_000,
+  });
+  const quotaExceeded = !!quota?.is_exceeded;
+
+  // Voice-to-text: lưu lại text đã gõ trước khi nói để nối thêm transcript
+  const baseTextRef = useRef("");
+  const { isListening, supported: speechSupported, start, stop } =
+    useSpeechRecognition(language === "en" ? "en-US" : "vi-VN", (transcript) => {
+      const base = baseTextRef.current;
+      setPrompt((base ? base + " " : "") + transcript);
+    });
+
+  const handleMicToggle = () => {
+    if (isListening) {
+      stop();
+    } else {
+      baseTextRef.current = prompt.trim();
+      start();
+    }
+  };
 
   const adjustTextareaHeight = () => {
     const ta = textareaRef.current;
@@ -123,6 +154,19 @@ export function ChatView({
 
   const isInterrupted = !!stream.interrupt;
 
+  // Sau khi 1 lượt chat xong (isLoading true→false), BE đã đếm token ở background
+  // → refetch quota để cập nhật thanh hiển thị. Delay nhẹ chờ BE ghi xong.
+  const prevLoadingRef = useRef(false);
+  useEffect(() => {
+    if (prevLoadingRef.current && !stream.isLoading) {
+      const id = setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["chatQuota"] });
+      }, 1200);
+      return () => clearTimeout(id);
+    }
+    prevLoadingRef.current = stream.isLoading;
+  }, [stream.isLoading, queryClient]);
+
   const pendingTransfer = useMemo<PendingTransfer | null>(() => {
     const found = extractPendingTransfer((stream.messages ?? []) as BaseMessage[]);
     if (!found || !found.session_id) return null;
@@ -151,16 +195,27 @@ export function ChatView({
     text: string,
     checkpoint?: CheckpointRef | null
   ) => {
+    const userMessage = { type: "human", content: text } as any;
     await stream.submit(
-      { messages: [{ role: "user", content: text }] as any },
-      checkpoint ? { checkpoint: checkpoint as any } : undefined
+      { messages: [userMessage] } as any,
+      checkpoint
+        ? { checkpoint: checkpoint as any }
+        : {
+            // Hiển thị ngay tin nhắn user, không đợi server stream về.
+            // Chỉ áp dụng cho tin nhắn mới — khi edit (có checkpoint) sẽ
+            // tạo branch nên không optimistic để tránh hiển thị sai vị trí.
+            optimisticValues: (prev: any) => ({
+              ...prev,
+              messages: [...(prev?.messages ?? []), userMessage],
+            }),
+          }
     );
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const text = prompt.trim();
-    if (!text || stream.isLoading) return;
+    if (!text || stream.isLoading || quotaExceeded) return;
     setPrompt("");
     try {
       // Auto-title if it's the first message
@@ -234,6 +289,20 @@ export function ChatView({
         </div>
 
         <div className={styles.chatHeaderRight}>
+          {quota && (
+            <span
+              className={`${styles.quotaChip} ${
+                quotaExceeded ? styles.quotaChipExceeded : ""
+              }`}
+              title={`Token hôm nay: ${quota.used.toLocaleString(
+                "vi-VN"
+              )} / ${quota.limit.toLocaleString("vi-VN")}`}
+            >
+              <span className={styles.quotaDot} />
+              {quota.used.toLocaleString("vi-VN")} / {Math.round(quota.limit / 1000)}k
+            </span>
+          )}
+
           <button
             type="button"
             className={styles.iconButton}
@@ -306,30 +375,53 @@ export function ChatView({
         <textarea
           ref={textareaRef}
           value={prompt}
-          disabled={stream.isLoading || isInterrupted}
+          disabled={stream.isLoading || isInterrupted || quotaExceeded}
           className={styles.input}
           placeholder={
-            isInterrupted
+            quotaExceeded
+              ? t("chatbot.quotaExceeded")
+              : isInterrupted
               ? t("chatbot.inputPlaceholderInterrupted")
+              : isListening
+              ? t("chatbot.listening")
               : t("chatbot.inputPlaceholder")
           }
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={handleKeyDown}
           rows={1}
         />
-        <button
-          type="submit"
-          className={styles.sendButton}
-          disabled={stream.isLoading || isInterrupted || !prompt.trim()}
-          title={stream.isLoading ? t("chatbot.sending") : t("chatbot.send")}
-          aria-label={stream.isLoading ? t("chatbot.sending") : t("chatbot.send")}
-        >
-          {stream.isLoading ? (
-            <span className={styles.sendLoadingText}>...</span>
-          ) : (
-            <SendIcon />
+
+        <div className={styles.formActions}>
+          {speechSupported && (
+            <button
+              type="button"
+              className={`${styles.micButton} ${
+                isListening ? styles.micButtonActive : ""
+              }`}
+              onClick={handleMicToggle}
+              disabled={stream.isLoading || isInterrupted || quotaExceeded}
+              title={isListening ? t("chatbot.micStop") : t("chatbot.micStart")}
+              aria-label={isListening ? t("chatbot.micStop") : t("chatbot.micStart")}
+            >
+              <Mic size={18} />
+            </button>
           )}
-        </button>
+          <button
+            type="submit"
+            className={styles.sendButton}
+            disabled={
+              stream.isLoading || isInterrupted || quotaExceeded || !prompt.trim()
+            }
+            title={stream.isLoading ? t("chatbot.sending") : t("chatbot.send")}
+            aria-label={stream.isLoading ? t("chatbot.sending") : t("chatbot.send")}
+          >
+            {stream.isLoading ? (
+              <span className={styles.sendLoadingText}>...</span>
+            ) : (
+              <SendIcon />
+            )}
+          </button>
+        </div>
       </form>
     </div>
   );

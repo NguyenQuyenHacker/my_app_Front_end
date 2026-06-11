@@ -1,24 +1,44 @@
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import styles from "../Signup.module.css";
 import { useT } from "../../../i18n/LanguageContext";
 
-const Field = ({ id, name, label, type = "text", value, onChange, required, autoComplete }) => (
-  <div className={styles.field}>
-    <input
-      id={id}
-      name={name}
-      type={type}
-      className={styles.input}
-      placeholder=" "
-      value={value}
-      onChange={onChange}
-      required={required}
-      autoComplete={autoComplete}
-    />
-    <label htmlFor={id} className={styles.label}>
-      {label}
-    </label>
-  </div>
-);
+const Field = ({ id, name, label, type = "text", value, onChange, required, autoComplete }) => {
+  const isPassword = type === "password";
+  const [show, setShow] = useState(false);
+  const inputType = isPassword && show ? "text" : type;
+
+  return (
+    <div className={styles.field}>
+      <input
+        id={id}
+        name={name}
+        type={inputType}
+        className={`${styles.input} ${isPassword ? styles.hasToggle : ""}`}
+        placeholder=" "
+        value={value}
+        onChange={onChange}
+        required={required}
+        autoComplete={autoComplete}
+      />
+      <label htmlFor={id} className={styles.label}>
+        {label}
+      </label>
+      {isPassword && (
+        <button
+          type="button"
+          className={styles.toggle}
+          onClick={() => setShow((v) => !v)}
+          aria-label={show ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+          title={show ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+          tabIndex={-1}
+        >
+          {show ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      )}
+    </div>
+  );
+};
 
 const SelectField = ({ id, name, label, value, onChange, options }) => (
   <div className={styles.field}>

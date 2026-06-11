@@ -1,10 +1,13 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import styles from '../Login.module.css';
 import { useT } from '../../../i18n/LanguageContext';
 
 const LoginForm = ({ formData, handleChange, handleSubmit, loading, error }) => {
   const t = useT();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <section className={styles.panel}>
@@ -46,8 +49,8 @@ const LoginForm = ({ formData, handleChange, handleSubmit, loading, error }) => 
             <input
               id="password"
               name="password"
-              type="password"
-              className={styles.input}
+              type={showPassword ? 'text' : 'password'}
+              className={`${styles.input} ${styles.hasToggle}`}
               placeholder=" "
               value={formData.password}
               onChange={handleChange}
@@ -56,6 +59,16 @@ const LoginForm = ({ formData, handleChange, handleSubmit, loading, error }) => 
             <label htmlFor="password" className={styles.label}>
               {t('login.password')}
             </label>
+            <button
+              type="button"
+              className={styles.toggle}
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+              title={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
           <div className={styles.row}>

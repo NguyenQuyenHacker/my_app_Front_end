@@ -1,75 +1,73 @@
 .page {
-  padding: 30px;
+  padding: var(--space-6) var(--space-7);
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  background-color: #f5f6f8;
-  /* Creating a subtle diagonal geometric background similar to Techcombank */
-  background-image: 
-    linear-gradient(45deg, rgba(255,255,255,0.4) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.4) 75%, rgba(255,255,255,0.4)),
-    linear-gradient(45deg, rgba(255,255,255,0.4) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.4) 75%, rgba(255,255,255,0.4));
-  background-size: 75px 75px;
-  background-position: 0 0, 37.5px 37.5px;
-  min-height: 100vh;
-  font-family: 'Inter', sans-serif;
-  color: #0d1117;
+  gap: var(--space-4);
+  font-family: var(--font-sans);
+  color: var(--color-primary-text);
 }
 
 .pageHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   flex-wrap: wrap;
-  gap: 12px;
-  /* Simulating the header layout shown in the reference */
-  margin-bottom: 6px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-1);
 }
 
 .eyebrow {
-  display: none; /* Reference image doesn't use eyebrow text, keeping it clean */
+  margin: 0 0 var(--space-2);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--color-danger);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .pageTitle {
-  font-size: 26px;
-  font-weight: 700;
-  color: #002244; /* Dark navy from Techcombank title */
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-medium);
+  color: var(--color-heading);
   margin: 0;
-  letter-spacing: -0.02em;
+  line-height: var(--lh-tight);
 }
 
 .pageDesc {
-  display: none; /* Cleaning up the header to match the minimalist reference */
+  margin: var(--space-2) 0 0;
+  font-size: var(--fs-base);
+  color: var(--color-secondary-text);
+  max-width: 560px;
 }
 
 .searchInput {
-  padding: 9px 18px;
-  border: 1px solid transparent;
-  border-radius: 999px; /* Pill shape */
-  font-size: 11.5px;
-  font-weight: 500;
-  min-width: 225px;
+  padding: 11px var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-base);
+  font-family: inherit;
+  min-width: 280px;
   outline: none;
-  background: white;
-  color: #0d1117;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: var(--color-bg);
+  color: var(--color-primary-text);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .searchInput::placeholder {
-  color: #8c9096;
+  color: var(--color-tertiary-text);
 }
 
 .searchInput:focus {
-  border-color: #000;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  border-color: var(--color-link);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
 }
 
 .panel {
-  background: white;
-  border-radius: 9px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04); /* Soft shadow from reference */
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
-  border: none;
 }
 
 .tableWrap {
@@ -84,80 +82,81 @@
 }
 
 .table th {
-  background-color: #f1f3f5; /* Light grey header like the tab backgrounds */
-  padding: 15px 18px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #495057;
-  border-bottom: none;
+  background: var(--color-bg-subtle);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--color-secondary-text);
+  border-bottom: 1px solid var(--color-border);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .table td {
-  padding: 15px 18px;
-  border-bottom: 1px solid #f1f3f5;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border-subtle);
   vertical-align: middle;
-  font-size: 11.5px;
-  color: #212529;
+  font-size: var(--fs-sm);
+  color: var(--color-primary-text);
 }
 
 .table tr:last-child td {
   border-bottom: none;
 }
 
-.table tr {
-  transition: background-color 0.2s ease;
+.table tbody tr {
+  transition: background var(--transition-fast);
 }
 
-.table tr:hover {
-  background-color: #f8f9fa;
+.table tbody tr:hover {
+  background: var(--color-bg-subtle);
 }
 
 .userCell {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .avatar {
-  width: 33px;
-  height: 33px;
-  border-radius: 50%;
-  background: #f1f3f5; 
-  color: #495057;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-circle);
+  background: var(--avatar-bg-warm);
+  color: var(--avatar-text-warm);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 12px;
-  border: 1px solid #e9ecef;
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-sm);
+  flex-shrink: 0;
 }
 
 .userName {
-  font-weight: 600;
-  color: #002244; /* Dark Navy */
-  font-size: 12px;
+  font-weight: var(--fw-medium);
+  color: var(--color-primary-text);
+  font-size: var(--fs-base);
 }
 
 .mono {
-  font-family: 'Inter', sans-serif; /* Kept standard font for cleaner numbers like the reference */
-  font-weight: 600;
-  color: #495057;
+  font-family: var(--font-mono);
+  color: var(--color-secondary-text);
+  font-size: var(--fs-sm);
 }
 
 /* Status Badges */
 .statusBadge {
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 600;
+  padding: 4px var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
 }
 
 .active {
-  background: transparent;
-  color: #495057;
-  /* Mimicking the clean text style, using simple dot indicator if we had one */
+  background: var(--color-bg-success-subtle);
+  color: #0a3621;
 }
 
 .active::before {
@@ -165,14 +164,14 @@
   display: inline-block;
   width: 6px;
   height: 6px;
-  background-color: #16a34a; /* Green dot */
-  border-radius: 50%;
+  background-color: var(--color-success);
+  border-radius: var(--radius-circle);
   margin-right: 6px;
 }
 
 .locked {
-  background: transparent;
-  color: #495057;
+  background: var(--color-bg-danger-subtle);
+  color: #58151c;
 }
 
 .locked::before {
@@ -180,56 +179,55 @@
   display: inline-block;
   width: 6px;
   height: 6px;
-  background-color: #dc2626; /* Red dot */
-  border-radius: 50%;
+  background-color: var(--color-danger);
+  border-radius: var(--radius-circle);
   margin-right: 6px;
 }
 
-/* Actions imitating the Black Pill Button (+ Mở tài khoản) */
+/* Action buttons */
 .actionBtn {
-  padding: 6px 15px;
-  border-radius: 999px; /* Pill shape */
-  font-size: 10px;
-  font-weight: 600;
+  padding: 8px var(--space-4);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: opacity var(--transition-fast);
   border: none;
+  font-family: inherit;
+}
+
+.actionBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .lockBtn {
-  background: #000; /* Solid Black */
-  color: #fff;
-  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.15);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
 }
 
-.lockBtn:hover {
-  background: #222;
-  transform: translateY(-1px);
+.lockBtn:hover:not(:disabled) {
+  opacity: 0.85;
 }
 
 .unlockBtn {
-  background: #e50020; /* Techcombank Red for unlocking to draw attention */
-  color: #fff;
-  box-shadow: 0 3px 9px rgba(229, 0, 32, 0.15);
+  background: transparent;
+  color: var(--color-primary-text);
+  border: 1px solid var(--color-border);
 }
 
-.unlockBtn:hover {
-  background: #cc001b;
-  transform: translateY(-1px);
+.unlockBtn:hover:not(:disabled) {
+  background: var(--color-bg-subtle);
 }
 
 /* States */
 .emptyState, .errorState, .loadingState {
-  padding: 48px 18px;
+  padding: var(--space-12) var(--space-5);
   text-align: center;
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 500;
-  background: white;
-  border-radius: 9px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+  color: var(--color-secondary-text);
+  font-size: var(--fs-base);
 }
 
 .errorState {
-  color: #dc2626;
+  color: var(--color-danger);
 }

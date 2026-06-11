@@ -1,7 +1,7 @@
 //src/admin/pages/AdminLogin/AdminLogin.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Globe, CircleHelp } from 'lucide-react';
+import { Globe, CircleHelp, Eye, EyeOff } from 'lucide-react';
 import styles from './AdminLogin.module.css';
 import { loginAdmin } from '../../api/adminApi';
 import { setAdminToken } from '../../../utils/authUtils';
@@ -11,6 +11,7 @@ const AdminLogin = () => {
   const { fetchAdminMe } = useAdmin();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -77,8 +78,11 @@ const AdminLogin = () => {
         <section className={styles.loginShell}>
           <div className={styles.loginCard}>
             <div className={styles.cardHeader}>
-              <h2 className={styles.title}>System Access</h2>
-              <p className={styles.subtitle}>Welcome back</p>
+              <div className={styles.titleRow}>
+                <span className={styles.titleAccent} aria-hidden="true" />
+                <h2 className={styles.title}>System Access</h2>
+              </div>
+              <p className={styles.subtitle}>Welcome back to Techcombank Admin Portal</p>
             </div>
 
             <form className={styles.form} onSubmit={handleLogin}>
@@ -103,15 +107,27 @@ const AdminLogin = () => {
                     Password
                   </label>
                 </div>
-                <input
-                  id="admin-password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className={styles.input}
-                  required
-                />
+                <div className={styles.passwordWrapper}>
+                  <input
+                    id="admin-password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className={`${styles.input} ${styles.hasToggle}`}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className={styles.toggle}
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                    title={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
 
               {error && (

@@ -1,72 +1,69 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useCallback, useEffect } from "react";
 import { Outlet } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAdminMe } from "../api/adminApi";
-import { getAdminToken, clearAdminAuth, setAdminName, setAdminCode, getAdminName, getAdminCode } from "../../utils/authUtils";
+import {
+  getAdminToken,
+  clearAdminAuth,
+  setAdminName,
+  setAdminCode,
+  getAdminName,
+  getAdminCode,
+} from "../../utils/authUtils";
 
 const AdminContext = createContext();
 
 export const useAdmin = () => {
-    const context = useContext(AdminContext);
-    if (!context) {
-        throw new Error("useAdmin must be used within an AdminProvider");
-    }
-    return context;
+  const context = useContext(AdminContext);
+  if (!context) {
+    throw new Error("useAdmin must be used within an AdminProvider");
+  }
+  return context;
 };
 
 export const AdminProvider = ({ children }) => {
-    const [admin, setAdmin] = useState({
-        admin_name: getAdminName() || "",
-        admin_code: getAdminCode() || "",
-    });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
+  const hasToken = !!getAdminToken();
 
-    const fetchAdminMe = useCallback(async () => {
-        const token = getAdminToken();
-        if (!token) return;
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["adminMe"],
+    queryFn: getAdminMe,
+    enabled: hasToken,
+    staleTime: 5 * 60_000,
+    initialData: () => {
+      const name = getAdminName();
+      const code = getAdminCode();
+      if (name || code) {
+        return { admin_name: name || "", admin_code: code || "" };
+      }
+      return undefined;
+    },
+  });
 
-        setLoading(true);
-        try {
-            const data = await getAdminMe();
-            setAdmin({
-                admin_name: data.admin_name,
-                admin_code: data.admin_code,
-            });
-            // Update cache for initial load next time
-            setAdminName(data.admin_name);
-            setAdminCode(data.admin_code);
-            setError(null);
-        } catch (err) {
-            console.error("Failed to fetch admin info:", err);
-            setError(err);
-            // If it's a 401, clearAdminAuth might already be handled by axios interceptor
-            // but we can be safe here too if needed.
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+  useEffect(() => {
+    if (data?.admin_name) setAdminName(data.admin_name);
+    if (data?.admin_code) setAdminCode(data.admin_code);
+  }, [data?.admin_name, data?.admin_code]);
 
-    const logout = useCallback(() => {
-        clearAdminAuth();
-        setAdmin({ admin_name: "", admin_code: "" });
-    }, []);
+  const logout = useCallback(() => {
+    clearAdminAuth();
+    queryClient.removeQueries({ queryKey: ["adminMe"] });
+  }, [queryClient]);
 
-    // Initial fetch on mount if token exists
-    useEffect(() => {
-        if (getAdminToken()) {
-            fetchAdminMe();
-        }
-    }, [fetchAdminMe]);
+  const admin = {
+    admin_name: data?.admin_name || "",
+    admin_code: data?.admin_code || "",
+  };
 
-    const value = {
-        admin,
-        loading,
-        error,
-        fetchAdminMe,
-        logout,
-        adminName: admin.admin_name,
-        adminCode: admin.admin_code,
-    };
+  const value = {
+    admin,
+    loading: isLoading,
+    error,
+    fetchAdminMe: refetch,
+    logout,
+    adminName: admin.admin_name,
+    adminCode: admin.admin_code,
+  };
 
-    return <AdminContext.Provider value={value}>{children || <Outlet />}</AdminContext.Provider>;
+  return <AdminContext.Provider value={value}>{children || <Outlet />}</AdminContext.Provider>;
 };

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Wallet, ChevronDown, Search, X } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { getAccountOverview } from "../../../../api/accountApi";
 import {
@@ -55,6 +56,7 @@ const TransferScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const t = useT();
+  const queryClient = useQueryClient();
 
   const [form, setForm] = useState(initialForm);
   const [step, setStep] = useState(1);
@@ -302,6 +304,12 @@ const TransferScreen = () => {
 
       setResult(response);
       setStep(3);
+
+      // Chuyển khoản thành công → làm mới dữ liệu liên quan (số dư, giao dịch,
+      // thống kê chi tiêu, trang chủ) để không phải reload trang thủ công.
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
+      queryClient.invalidateQueries({ queryKey: ["accountOverview"] });
+      queryClient.invalidateQueries({ queryKey: ["customerHomePage"] });
     } catch (error) {
       if (error.response?.status === 401) {
         setErrorMessage(error.response.data?.detail || "OTP không hợp lệ.");

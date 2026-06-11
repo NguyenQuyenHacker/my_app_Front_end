@@ -1,47 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import styles from "./CustomerHomePage.module.css";
 import { getCustomerHomePage } from "../../../../api/userApi";
 import CustomerService from "./components/CustomerService";
-import { clearClientToken } from "../../../../../utils/authUtils";
 import { useT } from "../../../../i18n/LanguageContext";
 
 export default function CustomerHomePage() {
-  const navigate = useNavigate();
   const t = useT();
-  const [home, setHome] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { data: home, isLoading, isError } = useQuery({
+    queryKey: ["customerHomePage"],
+    queryFn: getCustomerHomePage,
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError("");
-        const result = await getCustomerHomePage();
-        setHome(result);
-      } catch (err) {
-        if (err.response?.status === 401) {
-          clearClientToken();
-          navigate("/login");
-        } else {
-          console.error(err);
-          setError(t("common.serverError"));
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [navigate]);
-
-  if (loading) {
+  if (isLoading) {
     return <div className={styles.wrapper}>{t("home.loading")}</div>;
   }
 
-  if (error) {
-    return <div className={styles.wrapper}>{error}</div>;
+  if (isError) {
+    return <div className={styles.wrapper}>{t("common.serverError")}</div>;
   }
 
   return (

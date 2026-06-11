@@ -2,6 +2,31 @@ import { getAccessToken } from "./utils";
 import { BACKEND_URL } from "./constants";
 import { UserThread } from "./types";
 
+export interface ChatQuota {
+  used: number;
+  limit: number;
+  remaining: number;
+  is_exceeded: boolean;
+  reset_at: string;
+}
+
+export async function fetchQuota(): Promise<ChatQuota> {
+  const token = getAccessToken();
+  if (!token) throw new Error("Chưa đăng nhập");
+
+  const res = await fetch(`${BACKEND_URL}/chat/quota`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Không lấy được hạn mức token: ${res.status}`);
+  }
+
+  return res.json();
+}
+
 export async function fetchMyThreads(): Promise<UserThread[]> {
   const token = getAccessToken();
   if (!token) throw new Error("Chưa đăng nhập");

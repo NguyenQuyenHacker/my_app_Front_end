@@ -27,6 +27,11 @@ export const toggleKnowledgeBaseStatus = async (kbId, isActive) => {
   return response.data;
 };
 
+export const deleteKnowledgeBase = async (kbId) => {
+  const response = await adminApi.delete(`${BASE_URL}/${kbId}`);
+  return response.data;
+};
+
 export const updateKnowledgeBaseMetadata = async (kbId, data) => {
   const response = await adminApi.patch(`${BASE_URL}/${kbId}`, data);
   return response.data;

@@ -17,7 +17,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: var(--color-bg);
+  background: var(--color-bg-subtle);
 }
 
 /* =========================
@@ -451,59 +451,162 @@
 /* =========================
    INPUT FORM
 ========================= */
+/* ===== Chip hạn mức token (ở header) ===== */
+.quotaChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-secondary-text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.quotaDot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-circle);
+  background: var(--color-success);
+  flex-shrink: 0;
+}
+
+.quotaChipExceeded {
+  background: var(--color-bg-danger-subtle, #fdecec);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.quotaChipExceeded .quotaDot {
+  background: var(--color-danger);
+}
+
+/* ===== Composer: gộp ô nhập + nút thành 1 khối bo tròn (kiểu Claude/ChatGPT) ===== */
 .form {
   display: flex;
-  align-items: flex-end;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-5);
-  border-top: 1px solid var(--color-border-subtle);
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: var(--space-2) var(--space-4) var(--space-4);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
   background: var(--color-bg);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form:focus-within {
+  border-color: var(--color-primary-text);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.04);
 }
 
 .input {
-  flex: 1;
-  min-width: 0;
-  min-height: 46px;
+  width: 100%;
+  min-height: 28px;
   max-height: 160px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  padding: 8px 4px 0;
   font-size: var(--fs-base);
   font-family: var(--font-sans);
   font-weight: var(--fw-regular);
   line-height: var(--lh-base);
   outline: none;
   color: var(--color-primary-text);
-  background: var(--color-bg);
   resize: none;
   overflow-y: hidden;
   box-sizing: border-box;
   word-break: break-word;
   white-space: pre-wrap;
-  transition: border-color var(--transition-fast);
 }
 
 .input::placeholder {
   color: var(--color-tertiary-text);
 }
 
-.input:focus {
-  border-color: var(--color-primary-text);
+/* Hàng nút hành động: căn về góc dưới-phải, nằm trong khung */
+.formActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-1);
 }
 
 .sendButton {
-  width: 46px;
-  min-width: 46px;
-  height: 46px;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: 50%;
   background: var(--btn-primary-bg);
   color: var(--btn-primary-text);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: opacity var(--transition-fast);
+  transition: background var(--transition-fast), opacity var(--transition-fast);
+}
+
+/* Khi chưa nhập gì: nút gửi xám nhạt gọn (không washed-out như opacity 0.5) */
+.sendButton:disabled {
+  background: var(--color-bg-subtle);
+  color: var(--color-tertiary-text);
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Nút micro (voice-to-text) — icon button tròn, không viền */
+.micButton {
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-secondary-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.micButton:hover:not(:disabled) {
+  background: var(--color-bg-subtle);
+  color: var(--color-primary-text);
+}
+
+.micButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Trạng thái đang ghi âm — đỏ + nhấp nháy */
+.micButtonActive {
+  background: var(--color-danger);
+  color: #fff;
+  animation: micPulse 1.2s ease-in-out infinite;
+}
+
+.micButtonActive:hover:not(:disabled) {
+  background: var(--color-danger);
+  color: #fff;
+}
+
+@keyframes micPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(224, 23, 0, 0.45);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgba(224, 23, 0, 0);
+  }
 }
 
 .sendButton:hover:not(:disabled) {
@@ -660,12 +763,14 @@
 }
 
 @keyframes blink {
+
   0%,
   80%,
   100% {
     opacity: 0.25;
     transform: scale(0.9);
   }
+
   40% {
     opacity: 1;
     transform: scale(1);
@@ -712,7 +817,7 @@
   margin: 0 auto var(--space-4);
 }
 
-.modalIcon > svg {
+.modalIcon>svg {
   width: 24px;
   height: 24px;
 }
@@ -772,8 +877,13 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
@@ -781,6 +891,7 @@
     opacity: 0;
     transform: translateY(16px) scale(0.96);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);

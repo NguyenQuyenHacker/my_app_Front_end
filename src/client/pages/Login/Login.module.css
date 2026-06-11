@@ -221,6 +221,35 @@
   position: relative;
 }
 
+/* Nút ẩn/hiện mật khẩu */
+.hasToggle {
+  padding-right: 44px !important;
+}
+
+.toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-tertiary-text, #999);
+  cursor: pointer;
+  border-radius: var(--radius-sm, 8px);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.toggle:hover {
+  color: var(--color-primary-text);
+  background: var(--color-bg-subtle, rgba(0, 0, 0, .05));
+}
+
 .input {
   width: 100%;
   padding: 16px var(--space-4) 8px;

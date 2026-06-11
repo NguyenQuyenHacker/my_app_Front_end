@@ -16,7 +16,7 @@ const Header = ({ onToggleSidebar, sidebarCollapsed }) => {
           aria-label="Toggle sidebar"
           title={sidebarCollapsed ? "Mở sidebar" : "Thu gọn sidebar"}
         >
-          <Menu size={24} color="#ffffff" />
+          <Menu size={22} />
         </button>
       </div>
 

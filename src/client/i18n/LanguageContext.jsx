@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPreferences, updatePreferences } from "../api/settingsApi";
 import { getClientToken } from "../../utils/authUtils";
 import { SUPPORTED_LANGS, getMessage } from "./translations";
@@ -19,39 +20,44 @@ export function LanguageProvider({ children }) {
     const stored = localStorage.getItem(STORAGE_LANG);
     return SUPPORTED_LANGS.includes(stored) ? stored : "vi";
   });
+  const [hasToken, setHasToken] = useState(() => !!getClientToken());
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     document.documentElement.setAttribute("lang", language);
-    // Clean up legacy theme attribute set by old ThemeContext
     document.documentElement.removeAttribute("data-theme");
     localStorage.removeItem("client.theme");
   }, [language]);
 
   useEffect(() => {
-    let cancelled = false;
-
-    const syncFromServer = async () => {
-      if (!getClientToken()) return;
-      try {
-        const data = await getPreferences();
-        if (cancelled) return;
-        if (data?.language && SUPPORTED_LANGS.includes(data.language)) {
-          setLanguageState(data.language);
-          localStorage.setItem(STORAGE_LANG, data.language);
-        }
-      } catch {
-        // ignore
+    const onAuthChanged = () => {
+      const tokenNow = !!getClientToken();
+      setHasToken(tokenNow);
+      if (tokenNow) {
+        // Vừa login → refetch preferences mới
+        queryClient.invalidateQueries({ queryKey: ["preferences"] });
+      } else {
+        // Vừa logout → xóa cache, KHÔNG refetch (tránh gọi API khi đã hết token → 401)
+        queryClient.removeQueries({ queryKey: ["preferences"] });
       }
     };
+    window.addEventListener("client-auth-changed", onAuthChanged);
+    return () => window.removeEventListener("client-auth-changed", onAuthChanged);
+  }, [queryClient]);
 
-    syncFromServer();
-    window.addEventListener("client-auth-changed", syncFromServer);
+  const { data: prefs } = useQuery({
+    queryKey: ["preferences"],
+    queryFn: getPreferences,
+    enabled: hasToken,
+    staleTime: 5 * 60_000,
+  });
 
-    return () => {
-      cancelled = true;
-      window.removeEventListener("client-auth-changed", syncFromServer);
-    };
-  }, []);
+  useEffect(() => {
+    if (prefs?.language && SUPPORTED_LANGS.includes(prefs.language)) {
+      setLanguageState(prefs.language);
+      localStorage.setItem(STORAGE_LANG, prefs.language);
+    }
+  }, [prefs?.language]);
 
   const setLanguage = useCallback((value) => {
     if (!SUPPORTED_LANGS.includes(value)) return;

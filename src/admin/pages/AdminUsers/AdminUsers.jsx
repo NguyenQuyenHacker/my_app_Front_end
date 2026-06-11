@@ -1,32 +1,19 @@
 // src/admin/pages/AdminUsers/AdminUsers.jsx
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import styles from "./AdminUsers.module.css";
 import { getCustomers, updateCustomerStatus } from "../../api/user_barApi";
 
 export default function AdminUsers() {
-  const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [updatingAccountNo, setUpdatingAccountNo] = useState("");
+  const queryClient = useQueryClient();
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const data = await getCustomers();
-      setUsers(Array.isArray(data) ? data : []);
-      setError("");
-    } catch (err) {
-      console.error("Error fetching customers:", err);
-      setError("Không thể tải danh sách người dùng.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { data: users = [], isLoading: loading, isError } = useQuery({
+    queryKey: ["adminCustomers"],
+    queryFn: getCustomers,
+  });
+  const error = isError ? "Không thể tải danh sách người dùng." : "";
 
   const filteredUsers = useMemo(() => {
     const keyword = search.trim().toLowerCase();
@@ -45,27 +32,29 @@ export default function AdminUsers() {
     });
   }, [users, search]);
 
-  const toggleStatus = async (accountNo, currentStatus) => {
-    try {
+  const statusMutation = useMutation({
+    mutationFn: ({ accountNo, nextStatus }) =>
+      updateCustomerStatus(accountNo, nextStatus),
+    onMutate: async ({ accountNo, nextStatus }) => {
       setUpdatingAccountNo(accountNo);
-
-      const nextStatus = !currentStatus;
-
-      await updateCustomerStatus(accountNo, nextStatus);
-
-      setUsers((prev) =>
-        prev.map((item) =>
-          item.account_no === accountNo
-            ? { ...item, is_active: nextStatus }
-            : item
+      await queryClient.cancelQueries({ queryKey: ["adminCustomers"] });
+      const prev = queryClient.getQueryData(["adminCustomers"]);
+      queryClient.setQueryData(["adminCustomers"], (old) =>
+        old?.map((item) =>
+          item.account_no === accountNo ? { ...item, is_active: nextStatus } : item
         )
       );
-    } catch (err) {
-      console.error("Error updating customer status:", err);
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(["adminCustomers"], ctx.prev);
       alert("Không thể cập nhật trạng thái tài khoản.");
-    } finally {
-      setUpdatingAccountNo("");
-    }
+    },
+    onSettled: () => setUpdatingAccountNo(""),
+  });
+
+  const toggleStatus = (accountNo, currentStatus) => {
+    statusMutation.mutate({ accountNo, nextStatus: !currentStatus });
   };
 
   if (loading) {

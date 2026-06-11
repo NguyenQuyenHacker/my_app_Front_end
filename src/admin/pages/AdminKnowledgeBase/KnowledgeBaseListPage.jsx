@@ -1,77 +1,98 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, LayoutGrid, List, Loader2, MoreVertical, User } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Search, Plus, LayoutGrid, List, Loader2, Trash2, User } from 'lucide-react';
 import styles from './KnowledgeBaseListPage.module.css';
 import KnowledgeBaseCard from './components/KnowledgeBaseCard';
 import CreateKnowledgeBaseModal from './components/CreateKnowledgeBaseModal';
-import { getKnowledgeBases, createKnowledgeBase, toggleKnowledgeBaseStatus } from '../../api/knowledge_baseApi';
+import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
+import {
+  getKnowledgeBases,
+  createKnowledgeBase,
+  toggleKnowledgeBaseStatus,
+  deleteKnowledgeBase,
+} from '../../api/knowledge_baseApi';
+
+const mapKB = (kb) => ({
+  id: kb.kb_id,
+  name: kb.name,
+  creator: kb.admin_name,
+  documentCount: kb.document_count,
+  updatedAt: new Date(kb.updated_at).toLocaleDateString('vi-VN'),
+  description: kb.description,
+  isActive: kb.is_active,
+});
 
 const KnowledgeBaseListPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [knowledgeBases, setKnowledgeBases] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState('grid');
+  const [kbToDelete, setKbToDelete] = useState(null);
+  const [deleteError, setDeleteError] = useState(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchKBs = async () => {
-      try {
-        setIsLoading(true);
-        const data = await getKnowledgeBases();
-        
-        // Map backend data to frontend format
-        const mappedData = data.map(kb => ({
-          id: kb.kb_id,
-          name: kb.name,
-          creator: kb.admin_name,
-          documentCount: kb.document_count,
-          updatedAt: new Date(kb.updated_at).toLocaleDateString('vi-VN'),
-          description: kb.description,
-          isActive: kb.is_active
-        }));
-        
-        setKnowledgeBases(mappedData);
-      } catch (error) {
-        console.error("Failed to fetch knowledge bases:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const { data: rawKBs = [], isLoading } = useQuery({
+    queryKey: ['knowledgeBases'],
+    queryFn: getKnowledgeBases,
+  });
+  const knowledgeBases = useMemo(() => rawKBs.map(mapKB), [rawKBs]);
 
-    fetchKBs();
-  }, []);
+  const createMutation = useMutation({
+    mutationFn: createKnowledgeBase,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['knowledgeBases'] }),
+  });
+
+  const toggleMutation = useMutation({
+    mutationFn: ({ kbId, isActive }) => toggleKnowledgeBaseStatus(kbId, isActive),
+    onMutate: async ({ kbId, isActive }) => {
+      await queryClient.cancelQueries({ queryKey: ['knowledgeBases'] });
+      const prev = queryClient.getQueryData(['knowledgeBases']);
+      queryClient.setQueryData(['knowledgeBases'], (old) =>
+        old?.map((kb) => (kb.kb_id === kbId ? { ...kb, is_active: isActive } : kb))
+      );
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(['knowledgeBases'], ctx.prev);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteKnowledgeBase,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['knowledgeBases'] });
+      setKbToDelete(null);
+      setDeleteError(null);
+    },
+    onError: (err) => {
+      setDeleteError(err?.response?.data?.detail || 'Không thể xoá Knowledge Base.');
+    },
+  });
 
   const handleCreateKB = async (formData) => {
-    try {
-      await createKnowledgeBase(formData);
-      // Refresh list
-      const data = await getKnowledgeBases();
-      const mappedData = data.map(kb => ({
-        id: kb.kb_id,
-        name: kb.name,
-        creator: kb.admin_name,
-        documentCount: kb.document_count,
-        updatedAt: new Date(kb.updated_at).toLocaleDateString('vi-VN'),
-        description: kb.description,
-        isActive: kb.is_active
-      }));
-      setKnowledgeBases(mappedData);
-    } catch (error) {
-      console.error("Failed to create knowledge base:", error);
-      throw error; // Re-throw so modal can handle loading state/error
+    await createMutation.mutateAsync(formData);
+  };
+
+  const handleToggleKB = (kbId, newStatus) => {
+    toggleMutation.mutate({ kbId, isActive: newStatus });
+  };
+
+  const handleRequestDelete = (kb) => {
+    setDeleteError(null);
+    setKbToDelete(kb);
+  };
+
+  const handleConfirmDelete = () => {
+    if (kbToDelete) {
+      deleteMutation.mutate(kbToDelete.id);
     }
   };
 
-  const handleToggleKB = async (kbId, newStatus) => {
-    try {
-      await toggleKnowledgeBaseStatus(kbId, newStatus);
-      setKnowledgeBases(prev => prev.map(kb => 
-        kb.id === kbId ? { ...kb, isActive: newStatus } : kb
-      ));
-    } catch (error) {
-      console.error("Failed to toggle knowledge base:", error);
-    }
+  const handleCloseDelete = () => {
+    if (deleteMutation.isPending) return;
+    setKbToDelete(null);
+    setDeleteError(null);
   };
 
   const filteredKBs = knowledgeBases
@@ -132,7 +153,12 @@ const KnowledgeBaseListPage = () => {
             <div className={styles.grid}>
               {filteredKBs.length > 0 ? (
                 filteredKBs.map(kb => (
-                  <KnowledgeBaseCard key={kb.id} kb={kb} onToggle={handleToggleKB} />
+                  <KnowledgeBaseCard
+                    key={kb.id}
+                    kb={kb}
+                    onToggle={handleToggleKB}
+                    onDelete={handleRequestDelete}
+                  />
                 ))
               ) : (
                 <div className={styles.emptyState}>
@@ -180,11 +206,16 @@ const KnowledgeBaseListPage = () => {
                           <span className={styles.dateCell}>{kb.updatedAt}</span>
                         </td>
                         <td style={{ textAlign: 'right' }}>
-                          <button className={styles.iconBtn} style={{ border: 'none', background: 'transparent' }} onClick={(e) => {
-                            e.stopPropagation();
-                            // menu action logic could go here
-                          }}>
-                            <MoreVertical size={16} />
+                          <button
+                            className={styles.iconBtn}
+                            style={{ border: 'none', background: 'transparent', color: '#94a3b8' }}
+                            title="Xoá Knowledge Base"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRequestDelete(kb);
+                            }}
+                          >
+                            <Trash2 size={16} />
                           </button>
                         </td>
                       </tr>
@@ -203,10 +234,25 @@ const KnowledgeBaseListPage = () => {
         </>
       )}
 
-      <CreateKnowledgeBaseModal 
+      <CreateKnowledgeBaseModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onSubmit={handleCreateKB}
+      />
+
+      <ConfirmModal
+        isOpen={!!kbToDelete}
+        onClose={handleCloseDelete}
+        onConfirm={handleConfirmDelete}
+        title="Xoá Knowledge Base"
+        message={
+          kbToDelete
+            ? `Bạn có chắc muốn xoá "${kbToDelete.name}"? Toàn bộ documents và vector table sẽ bị xoá vĩnh viễn và không thể khôi phục.`
+            : ''
+        }
+        confirmText="Xoá vĩnh viễn"
+        isLoading={deleteMutation.isPending}
+        error={deleteError}
       />
     </div>
   );

@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import React, { useMemo } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { getAccountOverview } from "../../../../api/accountApi";
 import styles from "./AccountScreen.module.css";
-import { clearClientToken } from "../../../../../utils/authUtils";
 import { useT } from "../../../../i18n/LanguageContext";
 
 import AccountSummary from "./components/AccountSummary";
@@ -11,40 +11,18 @@ import AccountList from "./components/AccountList";
 import TransactionList from "./components/TransactionList";
 
 const AccountScreen = () => {
-  const navigate = useNavigate();
   const t = useT();
   const [searchParams] = useSearchParams();
 
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["accountOverview"],
+    queryFn: getAccountOverview,
+  });
+
+  const loading = isLoading;
+  const errorMessage = isError ? t("account.loadError") : "";
 
   const currentView = searchParams.get("view") || "overview";
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setErrorMessage("");
-
-        const result = await getAccountOverview();
-        setData(result);
-      } catch (error) {
-        if (error.response?.status === 401) {
-          clearClientToken();
-          navigate("/login");
-          return;
-        }
-
-        console.error(error);
-        setErrorMessage(t("account.loadError"));
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [navigate, t]);
 
   const customer = data?.customer || null;
   const account = data?.account || null;
