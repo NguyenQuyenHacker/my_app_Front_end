@@ -293,3 +293,68 @@
   font-size: 16px;
   color: var(--white);
 }
+
+/* =========================================================
+   RESPONSIVE — Tablet / Phone (iPhone, Samsung)
+   ========================================================= */
+
+/* ----- Tablet (≤1024px): sidebar hẹp hơn ----- */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+  }
+}
+
+/* ----- Phone lớn / tablet dọc (≤768px): sidebar thành drawer trượt ----- */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    bottom: 0;
+    z-index: 50;
+    width: 280px;
+    min-width: 280px;
+    transform: translateX(0);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* "collapsed" trên mobile = đóng drawer (trượt ra ngoài màn hình) */
+  .collapsed {
+    width: 280px;
+    min-width: 280px;
+    transform: translateX(-100%);
+    box-shadow: none;
+  }
+
+  /* Giữ nhãn đầy đủ trong drawer (bỏ kiểu icon-rail của desktop) */
+  .collapsed .brand,
+  .collapsed .profile,
+  .collapsed .bottomSection {
+    padding-left: 20px;
+    padding-right: 20px;
+    justify-content: flex-start;
+  }
+  .collapsed .navLink {
+    justify-content: flex-start;
+    padding: 0 14px;
+    gap: 12px;
+  }
+}
+
+/* ----- Điện thoại (iPhone / Samsung, ≤480px) ----- */
+@media (max-width: 480px) {
+  .sidebar {
+    top: 54px;
+    width: 86vw;
+    min-width: 86vw;
+    max-width: 320px;
+  }
+  .collapsed {
+    width: 86vw;
+    min-width: 86vw;
+    max-width: 320px;
+  }
+}

@@ -954,3 +954,17 @@
   display: flex;
   gap: var(--space-3);
 }
+
+/* =========================================================
+   RESPONSIVE — Điện thoại (iPhone / Samsung, ≤480px)
+   Chatbot ở chế độ overlay full-screen → bớt padding cho thoáng
+   ========================================================= */
+@media (max-width: 480px) {
+  .messages {
+    padding: var(--space-3);
+  }
+  .chatHeader,
+  .historyHeader {
+    padding: var(--space-3) var(--space-4);
+  }
+}

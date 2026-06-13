@@ -4,3 +4,10 @@
   flex-shrink: 0;
   background: transparent;
 }
+
+/* Trên mobile chatbot là overlay toàn màn hình → ẩn thanh kéo */
+@media (max-width: 768px) {
+  .splitter {
+    display: none;
+  }
+}

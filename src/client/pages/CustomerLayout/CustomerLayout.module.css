@@ -62,3 +62,104 @@
 .screensBar::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+/* Lớp nền drawer — chỉ hiện trên mobile */
+.sidebarBackdrop {
+  display: none;
+}
+
+/* Nút nổi mở/đóng chatbot — chỉ hiện trên mobile */
+.chatbotFab {
+  display: none;
+}
+
+/* =========================================================
+   RESPONSIVE — Tablet / Phone (iPhone, Samsung)
+   ========================================================= */
+
+/* ----- Tablet (iPad, ~768–1024px) ----- */
+@media (max-width: 1024px) {
+  .layout {
+    width: 100vw;
+    height: 100vh;
+    zoom: 1;
+  }
+
+  /* Chatbot hẹp lại để chừa chỗ cho nội dung */
+  .chatbotBar {
+    width: 320px !important;
+  }
+}
+
+/* ----- Phone lớn / tablet dọc (≤768px) ----- */
+@media (max-width: 768px) {
+  .layout {
+    width: 100vw;
+    height: 100vh;
+    zoom: 1;
+    position: relative;
+  }
+
+  .sidebarBackdrop {
+    display: block;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 45;
+  }
+
+  /* Nút nổi mở/đóng chatbot — nổi trên cùng (cao hơn overlay chatbot) */
+  .chatbotFab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    right: var(--space-4);
+    bottom: var(--space-5);
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-circle);
+    border: none;
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+    font-family: var(--font-sans);
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-medium);
+    box-shadow: var(--shadow-lg);
+    z-index: 70;
+    cursor: pointer;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .chatbotFab:hover {
+    opacity: 0.85;
+  }
+
+  .chatbotFab:active {
+    transform: scale(0.92);
+  }
+
+  /* Chatbot trở thành overlay toàn màn hình */
+  .chatbotBar {
+    position: fixed;
+    inset: 0;
+    width: 100% !important;
+    max-width: 100%;
+    z-index: 60;
+    border-left: none;
+    box-shadow: none;
+  }
+}
+
+/* ----- Điện thoại (iPhone / Samsung, ≤480px) ----- */
+@media (max-width: 480px) {
+  .chatbotBar {
+    width: 100% !important;
+  }
+  .sidebarBackdrop {
+    top: 54px;
+  }
+}

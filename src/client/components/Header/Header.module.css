@@ -130,3 +130,61 @@
   object-fit: contain;
   border-radius: 50%;
 }
+
+/* =========================================================
+   RESPONSIVE — Tablet / Phone (iPhone, Samsung)
+   ========================================================= */
+
+/* ----- Tablet (≤1024px) ----- */
+@media (max-width: 1024px) {
+  .left {
+    width: 240px;
+  }
+  .leftCollapsed {
+    width: 72px;
+  }
+}
+
+/* ----- Phone lớn / tablet dọc (≤768px) ----- */
+@media (max-width: 768px) {
+  /* Sidebar thành drawer → vùng trái header chỉ giữ nút menu */
+  .left,
+  .leftCollapsed {
+    width: 60px;
+  }
+  .headerMain {
+    padding: 0 14px;
+  }
+  /* Ẩn widget vị trí/thời tiết cho gọn */
+  .locationWeather {
+    display: none;
+  }
+}
+
+/* ----- Điện thoại (iPhone / Samsung, ≤480px) ----- */
+@media (max-width: 480px) {
+  .header {
+    height: 54px;
+  }
+  .left,
+  .leftCollapsed {
+    width: 52px;
+  }
+  .headerMain {
+    padding: 0 10px;
+  }
+  .logo {
+    height: 22px;
+  }
+  .rightGroup {
+    gap: 8px;
+  }
+  .aiButton {
+    width: 32px;
+    height: 32px;
+  }
+  .aiIconImage {
+    width: 19px;
+    height: 19px;
+  }
+}

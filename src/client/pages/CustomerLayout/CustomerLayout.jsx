@@ -13,10 +13,15 @@ export default function CustomerLayout() {
 
   const MAX_WIDTH = 720;
 
+  // ≤768px coi là mobile (iPhone, Samsung, tablet dọc)
+  const isMobile = () =>
+    typeof window !== "undefined" && window.innerWidth <= 768;
+
   const [chatbotWidth, setChatbotWidth] = useState(360);
   const [isDragging, setIsDragging] = useState(false);
-  const [isChatbotOpen, setIsChatbotOpen] = useState(true);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  // Trên mobile: chatbot đóng & sidebar (drawer) đóng mặc định
+  const [isChatbotOpen, setIsChatbotOpen] = useState(() => !isMobile());
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => isMobile());
   const layoutRef = useRef(null);
 
   useEffect(() => {
@@ -76,6 +81,14 @@ export default function CustomerLayout() {
         <div className={styles.body}>
           <Sidebar collapsed={sidebarCollapsed} />
 
+          {/* Lớp nền cho drawer trên mobile — bấm ra ngoài để đóng */}
+          {!sidebarCollapsed && (
+            <div
+              className={styles.sidebarBackdrop}
+              onClick={() => setSidebarCollapsed(true)}
+            />
+          )}
+
           <main className={styles.screensBar}>
             <Outlet />
             <Footer />
@@ -91,6 +104,16 @@ export default function CustomerLayout() {
           </div>
         </>
       )}
+
+      {/* Nút nổi mở/đóng trợ lý AI — chỉ hiện trên mobile */}
+      <button
+        type="button"
+        className={styles.chatbotFab}
+        onClick={toggleChatbot}
+        aria-label={isChatbotOpen ? "Đóng trợ lý AI" : "Mở trợ lý AI"}
+      >
+        {isChatbotOpen ? "✕" : "AI"}
+      </button>
     </div>
   );
 }
