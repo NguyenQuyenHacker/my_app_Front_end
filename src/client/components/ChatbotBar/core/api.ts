@@ -1,6 +1,16 @@
 import { getAccessToken } from "./utils";
-import { BACKEND_URL } from "./constants";
-import { UserThread } from "./types";
+import { BACKEND_URL, AGENT_HTTP_URL } from "./constants";
+import { UserThread, ChatMessage } from "./types";
+
+// Nạp lịch sử hội thoại từ serving agent (SQLAlchemySession) khi mở/đổi thread.
+export async function fetchSessionMessages(
+  sessionId: string
+): Promise<ChatMessage[]> {
+  const res = await fetch(`${AGENT_HTTP_URL}/agent/sessions/${sessionId}/messages`);
+  if (!res.ok) return [];
+  const rows: { role: "user" | "assistant"; content: string }[] = await res.json();
+  return rows.map((r, i) => ({ id: `h-${i}`, role: r.role, content: r.content }));
+}
 
 export interface ChatQuota {
   used: number;

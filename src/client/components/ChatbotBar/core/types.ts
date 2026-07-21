@@ -31,6 +31,13 @@ export type UserThread = {
   updated_at: string;
 };
 
+// Tin nhắn hội thoại bản Agents SDK (tuyến tính, không checkpoint/branch).
+export type ChatMessage = {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+};
+
 export type ChatbotBarProps = {
   onClose?: () => void;
 };

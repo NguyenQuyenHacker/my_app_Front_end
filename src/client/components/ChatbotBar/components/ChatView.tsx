@@ -2,23 +2,16 @@
 import { useState, useMemo, useEffect, useRef, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Client } from "@langchain/langgraph-sdk";
-import { useStream } from "@langchain/react";
-import type { BaseMessage } from "@langchain/core/messages";
-import { AppMessage, CheckpointRef, MessageMeta } from "../core/types";
-import { isVisibleMessage, getAccessToken } from "../core/utils";
-import { AGENT_URL, ASSISTANT_ID } from "../core/constants";
-import { fetchQuota } from "../core/api";
 import { Mic } from "lucide-react";
+import { fetchQuota } from "../core/api";
+import { useAgentChat } from "../core/useAgentChat";
 import { MessageCard } from "./MessageCard";
-import { HITLApprovalRenderer } from "./HITLApprovalRenderer";
 import { ClockIcon, PlusIcon, SendIcon } from "./Icons";
 import type { PendingTransfer } from "./TransferConfirmCard";
 import { useT, useLanguage } from "../../../i18n/LanguageContext";
 import { useSpeechRecognition } from "../core/useSpeechRecognition";
 import styles from "../ChatbotBar.module.css";
 
-const TRANSFER_PENDING_MARKER = "[TRANSFER_PENDING]";
 const HANDLED_SESSIONS_STORAGE_KEY = "fe_handled_transfer_sessions";
 
 function loadHandledSessions(): Set<string> {
@@ -38,37 +31,6 @@ function persistHandledSessions(set: Set<string>) {
   }
 }
 
-function messageContentToString(m: any): string {
-  const c = m?.content;
-  if (typeof c === "string") return c;
-  if (Array.isArray(c)) {
-    return c
-      .map((part: any) => (typeof part === "string" ? part : part?.text ?? ""))
-      .join("");
-  }
-  return "";
-}
-
-function extractPendingTransfer(messages: BaseMessage[]): PendingTransfer | null {
-  if (!messages?.length) return null;
-  for (let i = messages.length - 1; i >= 0; i--) {
-    const content = messageContentToString(messages[i]);
-    const idx = content.indexOf(TRANSFER_PENDING_MARKER);
-    if (idx < 0) continue;
-
-    const after = content.slice(idx + TRANSFER_PENDING_MARKER.length);
-    const endIdx = after.indexOf("\n");
-    const jsonStr = (endIdx >= 0 ? after.slice(0, endIdx) : after).trim();
-
-    try {
-      const parsed = JSON.parse(jsonStr) as PendingTransfer;
-      if (parsed?.session_id) return parsed;
-    } catch {
-      continue;
-    }
-  }
-  return null;
-}
 
 export function ChatView({
   threadId,
@@ -93,8 +55,19 @@ export function ChatView({
   );
   const navigatedRef = useRef<Set<string>>(new Set());
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
 
-  // Hạn mức token/ngày — hiển thị + chặn ô nhập khi hết
+  // Chat qua WebSocket (thay useStream)
+  const {
+    messages,
+    isLoading,
+    connected,
+    send,
+    pendingTransfer: wsTransfer,
+    clearPendingTransfer,
+  } = useAgentChat(threadId);
+
+  // Hạn mức token/ngày (BE /chat/quota — hiển thị)
   const { data: quota } = useQuery({
     queryKey: ["chatQuota"],
     queryFn: fetchQuota,
@@ -102,7 +75,7 @@ export function ChatView({
   });
   const quotaExceeded = !!quota?.is_exceeded;
 
-  // Voice-to-text: lưu lại text đã gõ trước khi nói để nối thêm transcript
+  // Voice-to-text
   const baseTextRef = useRef("");
   const { isListening, supported: speechSupported, start, stop } =
     useSpeechRecognition(language === "en" ? "en-US" : "vi-VN", (transcript) => {
@@ -123,10 +96,9 @@ export function ChatView({
     const ta = textareaRef.current;
     if (!ta) return;
     ta.style.height = "auto";
-    const max = 160; // px ~ 6-7 dòng
+    const max = 160;
     const next = Math.min(ta.scrollHeight, max);
     ta.style.height = `${next}px`;
-    // Chỉ hiện scrollbar khi đã đạt max height
     ta.style.overflowY = ta.scrollHeight > max ? "auto" : "hidden";
   };
 
@@ -134,148 +106,79 @@ export function ChatView({
     adjustTextareaHeight();
   }, [prompt]);
 
-  const stream = useStream<{ messages: BaseMessage[] }>({
-    apiUrl: AGENT_URL,
-    assistantId: ASSISTANT_ID,
-    threadId,
-    fetchStateHistory: true,
-    client: new Client({
-      apiUrl: AGENT_URL,
-      defaultHeaders: {
-        Authorization: `Bearer ${getAccessToken()}`,
-      },
-    }),
-  });
+  // Tự cuộn xuống tin nhắn mới nhất khi gửi/nhận (kể cả lúc đang stream token) + hiện typing.
+  useEffect(() => {
+    const el = messagesRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [messages, isLoading]);
 
-  const messages = useMemo(
-    () => ((stream.messages ?? []) as BaseMessage[]).filter(isVisibleMessage),
-    [stream.messages]
-  );
-
-  const isInterrupted = !!stream.interrupt;
-
-  // Sau khi 1 lượt chat xong (isLoading true→false), BE đã đếm token ở background
-  // → refetch quota để cập nhật thanh hiển thị. Delay nhẹ chờ BE ghi xong.
+  // Sau khi 1 lượt xong → refetch quota
   const prevLoadingRef = useRef(false);
   useEffect(() => {
-    if (prevLoadingRef.current && !stream.isLoading) {
+    if (prevLoadingRef.current && !isLoading) {
       const id = setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ["chatQuota"] });
       }, 1200);
       return () => clearTimeout(id);
     }
-    prevLoadingRef.current = stream.isLoading;
-  }, [stream.isLoading, queryClient]);
+    prevLoadingRef.current = isLoading;
+  }, [isLoading, queryClient]);
 
+  // Payload chuyển khoản do serving đẩy qua WS (event "transfer") → navigate sang trang chuyển khoản
   const pendingTransfer = useMemo<PendingTransfer | null>(() => {
-    const found = extractPendingTransfer((stream.messages ?? []) as BaseMessage[]);
-    if (!found || !found.session_id) return null;
-    if (handledSessions.has(found.session_id)) return null;
-    return found;
-  }, [stream.messages, handledSessions]);
+    if (!wsTransfer || !wsTransfer.session_id) return null;
+    if (handledSessions.has(wsTransfer.session_id)) return null;
+    return wsTransfer as PendingTransfer;
+  }, [wsTransfer, handledSessions]);
 
-  // Auto-navigate sang TransferScreen khi detect pending transfer mới
   useEffect(() => {
     if (!pendingTransfer) return;
     const sid = pendingTransfer.session_id;
     if (navigatedRef.current.has(sid)) return;
     navigatedRef.current.add(sid);
-
     setHandledSessions((prev) => {
       const next = new Set(prev);
       next.add(sid);
       persistHandledSessions(next);
       return next;
     });
-
     navigate("/customer/transfer", { state: { fromAgent: pendingTransfer } });
-  }, [pendingTransfer, navigate]);
-
-  const submitUserMessage = async (
-    text: string,
-    checkpoint?: CheckpointRef | null
-  ) => {
-    const userMessage = { type: "human", content: text } as any;
-    await stream.submit(
-      { messages: [userMessage] } as any,
-      checkpoint
-        ? { checkpoint: checkpoint as any }
-        : {
-            // Hiển thị ngay tin nhắn user, không đợi server stream về.
-            // Chỉ áp dụng cho tin nhắn mới — khi edit (có checkpoint) sẽ
-            // tạo branch nên không optimistic để tránh hiển thị sai vị trí.
-            optimisticValues: (prev: any) => ({
-              ...prev,
-              messages: [...(prev?.messages ?? []), userMessage],
-            }),
-          }
-    );
-  };
+    clearPendingTransfer();
+  }, [pendingTransfer, navigate, clearPendingTransfer]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const text = prompt.trim();
-    if (!text || stream.isLoading || quotaExceeded) return;
-    setPrompt("");
-    try {
-      // Auto-title if it's the first message
-      if (messages.length === 0 && onUpdateTitle) {
-        const cleanText = text.replace(/[?.,!]+/g, "").trim();
-        const newTitle =
-          cleanText.length > 30 ? cleanText.substring(0, 30) + "..." : cleanText;
-        onUpdateTitle(threadId, newTitle || t("chatbot.defaultThreadTitle"));
-      }
-      await submitUserMessage(text);
-    } catch (error) {
-      console.error(error);
-      alert(t("chatbot.cannotSendMessage"));
+    if (!text || isLoading || quotaExceeded || !connected) return;
+
+    // Auto-title khi là tin nhắn đầu
+    if (messages.length === 0 && onUpdateTitle) {
+      const cleanText = text.replace(/[?.,!]+/g, "").trim();
+      const newTitle =
+        cleanText.length > 30 ? cleanText.substring(0, 30) + "..." : cleanText;
+      onUpdateTitle(threadId, newTitle || t("chatbot.defaultThreadTitle"));
     }
+
+    const ok = send(text);
+    if (ok) setPrompt("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Enter (không shift) → submit | Shift+Enter → xuống dòng (default behavior)
-    // isComposing: tránh submit khi đang gõ IME (tiếng Việt Telex/VNI)
-    if (
-      e.key === "Enter" &&
-      !e.shiftKey &&
-      !e.nativeEvent.isComposing
-    ) {
+    if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       handleSubmit(e as unknown as FormEvent);
     }
   };
 
-  const handleEdit = async (
-    _message: BaseMessage,
-    meta: MessageMeta | undefined,
-    nextText: string
-  ) => {
-    const checkpoint = meta?.firstSeenState?.parent_checkpoint;
-    if (!checkpoint) {
-      alert(t("chatbot.noCheckpointBranch"));
-      return;
-    }
-    try {
-      await submitUserMessage(nextText, checkpoint);
-    } catch (error) {
-      console.error(error);
-      alert(t("chatbot.cannotEditMessage"));
-    }
-  };
+  // Tin hiển thị: bỏ placeholder assistant rỗng (đang chờ token đầu)
+  const visibleMessages = messages.filter(
+    (m) => !(m.role === "assistant" && m.content === "")
+  );
+  const last = messages[messages.length - 1];
+  const showTyping =
+    isLoading && last?.role === "assistant" && last.content === "";
 
-  const handleRegenerate = async (meta: MessageMeta | undefined) => {
-    const checkpoint = meta?.firstSeenState?.parent_checkpoint;
-    if (!checkpoint) {
-      alert(t("chatbot.noCheckpointRegen"));
-      return;
-    }
-    try {
-      await stream.submit(undefined, { checkpoint: checkpoint as any });
-    } catch (error) {
-      console.error(error);
-      alert(t("chatbot.cannotRegenerate"));
-    }
-  };
+  const inputDisabled = isLoading || quotaExceeded || !connected;
 
   return (
     <div className={styles.chatPanel}>
@@ -336,29 +239,12 @@ export function ChatView({
         </div>
       </header>
 
-      <div className={styles.messages}>
-        {messages.map((message, index) => (
-          <MessageCard
-            key={(message as AppMessage).id ?? `message-${index}`}
-            message={message}
-            index={index}
-            meta={stream.getMessagesMetadata(message as any) as
-              | MessageMeta
-              | undefined}
-            loading={stream.isLoading}
-            onEdit={handleEdit}
-            onRegenerate={handleRegenerate}
-            onSwitchBranch={stream.setBranch}
-          />
+      <div className={styles.messages} ref={messagesRef}>
+        {visibleMessages.map((message) => (
+          <MessageCard key={message.id} message={message} />
         ))}
 
-        <HITLApprovalRenderer
-          interrupt={stream.interrupt}
-          submit={stream.submit}
-          isProcessing={stream.isLoading}
-        />
-
-        {stream.isLoading && !isInterrupted && (
+        {showTyping && (
           <div className={`${styles.messageRow} ${styles.aiRow}`}>
             <div className={`${styles.messageBubble} ${styles.aiBubble}`}>
               <div className={styles.typing}>
@@ -375,13 +261,13 @@ export function ChatView({
         <textarea
           ref={textareaRef}
           value={prompt}
-          disabled={stream.isLoading || isInterrupted || quotaExceeded}
+          disabled={inputDisabled}
           className={styles.input}
           placeholder={
-            quotaExceeded
+            !connected
+              ? "Đang kết nối..."
+              : quotaExceeded
               ? t("chatbot.quotaExceeded")
-              : isInterrupted
-              ? t("chatbot.inputPlaceholderInterrupted")
               : isListening
               ? t("chatbot.listening")
               : t("chatbot.inputPlaceholder")
@@ -399,7 +285,7 @@ export function ChatView({
                 isListening ? styles.micButtonActive : ""
               }`}
               onClick={handleMicToggle}
-              disabled={stream.isLoading || isInterrupted || quotaExceeded}
+              disabled={inputDisabled}
               title={isListening ? t("chatbot.micStop") : t("chatbot.micStart")}
               aria-label={isListening ? t("chatbot.micStop") : t("chatbot.micStart")}
             >
@@ -409,13 +295,11 @@ export function ChatView({
           <button
             type="submit"
             className={styles.sendButton}
-            disabled={
-              stream.isLoading || isInterrupted || quotaExceeded || !prompt.trim()
-            }
-            title={stream.isLoading ? t("chatbot.sending") : t("chatbot.send")}
-            aria-label={stream.isLoading ? t("chatbot.sending") : t("chatbot.send")}
+            disabled={inputDisabled || !prompt.trim()}
+            title={isLoading ? t("chatbot.sending") : t("chatbot.send")}
+            aria-label={isLoading ? t("chatbot.sending") : t("chatbot.send")}
           >
-            {stream.isLoading ? (
+            {isLoading ? (
               <span className={styles.sendLoadingText}>...</span>
             ) : (
               <SendIcon />
