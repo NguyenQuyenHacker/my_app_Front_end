@@ -7,7 +7,7 @@
 
 Giao diện lấy cảm hứng từ ngân hàng số hiện đại (Techcombank-style).
 
-> 🔗 **Backend:** [`ai-chatbot-digital-banking-web-backend`](https://github.com/NguyenQuyenHacker/ai-chatbot-digital-banking-web-backend) — FastAPI + LangGraph agent.
+> 🔗 **Backend:** [`ai-chatbot-digital-banking-web-backend`](https://github.com/NguyenQuyenHacker/ai-chatbot-digital-banking-web-backend) — FastAPI + agent (OpenAI Agents SDK).
 
 ---
 
@@ -29,7 +29,7 @@ Giao diện lấy cảm hứng từ ngân hàng số hiện đại (Techcombank-
 - Trang chủ tổng quan, hồ sơ cá nhân, cài đặt (profile / bảo mật / hiển thị).
 - Quản lý tài khoản, **chuyển tiền**, **tài khoản tiết kiệm**.
 - **Thống kê** trực quan bằng biểu đồ (Recharts).
-- **Trợ lý AI**: chat streaming, render Markdown, kết nối trực tiếp LangGraph agent.
+- **Trợ lý AI**: chat streaming qua WebSocket, render Markdown, kết nối trực tiếp tới agent serving.
 - Đa ngôn ngữ (i18n) qua `LanguageProvider`.
 
 **Admin**
@@ -43,12 +43,22 @@ Giao diện lấy cảm hứng từ ngân hàng số hiện đại (Techcombank-
 flowchart LR
     U["Người dùng"] --> FE["Frontend (React + Vite)<br/>Vercel"]
     FE -- "REST API (Axios)" --> BE["Backend<br/>FastAPI"]
-    FE -- "Chat streaming<br/>langgraph-sdk" --> AG["LangGraph Agent<br/>Gemini + RAG"]
-    BE --> AG
+    FE -- "Chat streaming<br/>WebSocket" --> AG["Agent serving<br/>Gemini + RAG"]
+    AG -- "gọi tool ngược lại" --> BE
     BE --> DB[("PostgreSQL<br/>+ pgvector")]
 ```
 
-Frontend giao tiếp với backend qua Axios (`VITE_API_URL`). Riêng luồng chat kết nối tới LangGraph agent qua `@langchain/langgraph-sdk` để nhận token streaming.
+Frontend giao tiếp với backend qua Axios (`VITE_API_URL`). Riêng luồng chat mở **WebSocket** thẳng tới agent serving (`VITE_AGENT_WS_URL`) để nhận token streaming — không còn đi qua proxy của backend.
+
+Các loại message serving đẩy về qua WebSocket:
+
+| `type` | Ý nghĩa |
+|---|---|
+| `token` | Từng mẩu nội dung câu trả lời (streaming) |
+| `tool` | Agent vừa gọi tool — dùng để hiện trạng thái "đang tra cứu..." |
+| `transfer` | Payload chuyển tiền → FE tự điền form và chuyển sang `/customer/transfer` |
+| `done` | Kết thúc lượt trả lời |
+| `error` | Lỗi trong lúc chạy |
 
 ## Tech Stack
 
@@ -57,7 +67,7 @@ Frontend giao tiếp với backend qua Axios (`VITE_API_URL`). Riêng luồng ch
 | Core | React 19, Vite 7, JavaScript (JSX) |
 | Routing | React Router 7 (protected/public routes) |
 | Data fetching | TanStack Query, Axios |
-| AI / Chat | `@langchain/langgraph-sdk`, `langchain`, `react-markdown` + `remark-gfm` |
+| AI / Chat | WebSocket API (native), `react-markdown` + `remark-gfm` |
 | Biểu đồ | Recharts |
 | Styling | CSS Modules |
 | Icons | lucide-react |
@@ -107,6 +117,7 @@ src/
 ### Prerequisites
 - **Node.js ≥ 18** (khuyến nghị bản LTS)
 - Backend đang chạy (xem repo [`ai-chatbot-digital-banking-web-backend`](https://github.com/NguyenQuyenHacker/ai-chatbot-digital-banking-web-backend))
+- **Agent serving** đang chạy ở `:2024` — nếu muốn dùng chatbot (cùng repo backend, `app-agent/`)
 
 ### Installation & Run
 
@@ -119,8 +130,10 @@ cd ai-chatbot-digital-banking-web-frontend
 npm install
 
 # 3. Cấu hình biến môi trường
-#    Tạo file .env ở thư mục gốc, trỏ tới backend
+#    Tạo file .env ở thư mục gốc, trỏ tới backend + agent serving
 echo "VITE_API_URL=http://localhost:8000" > .env
+echo "VITE_AGENT_HTTP_URL=http://localhost:2024" >> .env
+echo "VITE_AGENT_WS_URL=ws://localhost:2024" >> .env
 
 # 4. Chạy dev server (hot reload)
 npm run dev
@@ -132,7 +145,9 @@ npm run dev
 
 | Biến | Bắt buộc | Mô tả |
 |---|:---:|---|
-| `VITE_API_URL` | ✅ | URL gốc của backend API (fallback `http://127.0.0.1:8000`) |
+| `VITE_API_URL` | ✅ | URL gốc của backend API (fallback `http://localhost:8000`) |
+| `VITE_AGENT_HTTP_URL` | ❌ | URL REST của agent serving — quản lý hội thoại (mặc định `http://localhost:2024`) |
+| `VITE_AGENT_WS_URL` | ❌ | URL WebSocket của agent serving — chat streaming (mặc định `ws://localhost:2024`) |
 
 > Vite chỉ expose biến có tiền tố `VITE_` ra client — không đặt secret nhạy cảm ở đây.
 
@@ -150,7 +165,7 @@ npm run dev
 Triển khai trên **Vercel**:
 
 1. Import repo → Vercel tự nhận framework **Vite**.
-2. Thêm biến môi trường `VITE_API_URL` = URL backend đã deploy.
+2. Thêm biến môi trường `VITE_API_URL` (backend đã deploy) và `VITE_AGENT_HTTP_URL` / `VITE_AGENT_WS_URL` (agent serving). Bản deploy chạy HTTPS thì WebSocket phải dùng `wss://`.
 3. Deploy. File [`vercel.json`](./vercel.json) đã cấu hình rewrite mọi path về `index.html` để SPA routing hoạt động.
 
 ---
